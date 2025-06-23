@@ -1,10 +1,10 @@
-import { userTypeDefs } from './user.typeDefs'
-import { userResolvers } from './user.resolver'
+import { osTypeDefs } from './os.typeDefs'
+import { osResolvers } from './os.resolver'
 import { FastifyInstance } from 'fastify'
 
 export const buildSchema = (app: FastifyInstance) => ({
   schema: `
-    ${userTypeDefs}
+    ${osTypeDefs}
   `,
-  resolvers: userResolvers(app)
+  resolvers: osResolvers(app)
 })
