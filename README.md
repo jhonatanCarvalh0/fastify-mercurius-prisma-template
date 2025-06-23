@@ -1,1 +1,0 @@
-# fastify-mercurius-prisma-template
