@@ -1,14 +1,26 @@
 import Fastify from 'fastify'
-import { join } from 'path'
+import { PrismaClient } from '../generated/prisma'
 
-// Initialize Fastify
+// Initialize Fastify and Prisma client
+const prisma = new PrismaClient()
 const fastify = Fastify({
-  logger: true
+  logger: false
 })
 
 // Basic route
 fastify.get('/', async (request, reply) => {
   return { hello: 'world' }
+})
+
+// Route fetch clients - Get ALL
+fastify.get('/clients', async (req, res) => {
+  const clientes = await prisma.cliente.findMany()
+  return clientes
+})
+
+// Shutdown hook
+fastify.addHook('onClose', async () => {
+  await prisma.$disconnect()
 })
 
 // Start server
