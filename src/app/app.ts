@@ -1,6 +1,6 @@
 import Fastify from 'fastify';
-import { registerRoutes } from '../routes';
-import { registerPlugins } from '../plugins';
+import { registerRoutes } from '../routes/registerRoutes';
+import { registerPlugins } from '../plugins/registerPlugins';
 
 /**
 * Cria e configura uma instância do servidor Fastify.

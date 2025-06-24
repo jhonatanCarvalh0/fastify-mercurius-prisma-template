@@ -1,7 +1,6 @@
 // modules/clients/route.ts
 import { FastifyInstance } from 'fastify';
 import { createClientController, listClientsController } from './controller';
-import { createClientSchema } from './schema';
 
 /**
  * Rotas relacionadas ao domínio "Clientes"
