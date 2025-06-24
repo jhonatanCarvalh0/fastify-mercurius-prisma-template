@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { registerRoutes } from '../routes/registerRoutes';
 import { registerPlugins } from '../plugins/registerPlugins';
+import { registerGraphQL } from '../graphql/registerGraphQL';
 
 /**
 * Cria e configura uma instância do servidor Fastify.
@@ -19,6 +20,9 @@ export async function buildApp() {
 
   // 📦 Rotas principais da aplicação
   await registerRoutes(fastify);
+
+  // 📊 Registra GraphQL
+  await registerGraphQL(fastify);
 
   return fastify;
 }
