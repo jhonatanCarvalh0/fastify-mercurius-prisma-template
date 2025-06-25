@@ -1,4 +1,4 @@
-// modules/clients/schema.ts
+// modules/clientes/schema.ts
 import { z } from 'zod';
 
 /**
@@ -13,10 +13,10 @@ import { z } from 'zod';
  * Quando mudar o formato esperado dos dados
  */
 
-export const createClientSchema = z.object({
+export const createClienteSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   unidade: z.string().min(1, 'Unidade é obrigatória'),
   subunidade: z.string().optional(),
 });
 
-export type CreateClientInput = z.infer<typeof createClientSchema>;
+export type CreateClienteInput = z.infer<typeof createClienteSchema>;

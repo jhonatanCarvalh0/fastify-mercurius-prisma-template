@@ -1,9 +1,9 @@
 // src/graphql/index.ts
 
-import mercurius from 'mercurius';
-import { typeDefs } from './schema';
 import { FastifyInstance } from 'fastify';
-import { buildResolvers } from './resolvers';
+import mercurius from 'mercurius';
+import { buildResolvers } from './_resolvers';
+import { typeDefs } from './schema';
 
 /**
  * Integra o Mercurius (GraphQL) ao servidor Fastify.
@@ -13,6 +13,7 @@ export async function registerGraphQL(fastify: FastifyInstance) {
   await fastify.register(mercurius, {
     schema: typeDefs,
     resolvers: buildResolvers(fastify),
-    graphiql: true, // acessível via navegador em /graphiql
+    graphiql: true, // 👈 importante para funcionar via navegador
+    path: '/graphql', // 👈 esse é o endpoint
   });
 }

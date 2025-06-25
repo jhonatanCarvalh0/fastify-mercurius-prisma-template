@@ -1,7 +1,7 @@
 // src/routes/index.ts
 
 import { FastifyInstance } from 'fastify';
-import { clientsRoute } from '../modules/clients/route';
+import { clientsRoute } from '../modules/cliente/route';
 
 /**
  * Diretriz:
@@ -20,4 +20,5 @@ import { clientsRoute } from '../modules/clients/route';
 
 export async function registerRoutes(fastify: FastifyInstance) {
   await fastify.register(clientsRoute, { prefix: '/api/clients' });
+  // await fastify.register(fornecedorRoute, { prefix: '/api/fornecedor' });
 }

@@ -1,6 +1,6 @@
 // modules/clients/service.ts
 import { FastifyInstance } from 'fastify';
-import { CreateClientInput } from './schema';
+import { CreateClienteInput } from './schema';
 
 /**
  * Lista todos os clientes no banco de dados.
@@ -14,7 +14,7 @@ import { CreateClientInput } from './schema';
  * Quando mudar o que acontece no banco (ex: filtros, joins)
  */
 
-export async function getClients(fastify: FastifyInstance) {
+export async function getClientes(fastify: FastifyInstance) {
   return fastify.prisma.cliente.findMany({
     orderBy: { id: 'asc' },
   });
@@ -23,7 +23,7 @@ export async function getClients(fastify: FastifyInstance) {
 /**
  * Cria um novo cliente com os dados validados.
  */
-export async function createClient(fastify: FastifyInstance, data: CreateClientInput) {
+export async function createCliente(fastify: FastifyInstance, data: CreateClienteInput) {
   return fastify.prisma.cliente.create({
     data,
   });

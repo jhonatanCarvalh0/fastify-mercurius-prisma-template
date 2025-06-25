@@ -1,24 +1,29 @@
 // src/graphql/schema.ts
+import * as types from './_schemaTypes';
 
 export const typeDefs = /* GraphQL */ `
-  type Client {
-    id: Int!
-    nome: String!
-    unidade: String!
-    subunidade: String
+
+${types.typeCliente}
+${types.typeFornecedor}
+${types.typePanelManutencao}
+${types.typeOrdemServico}
+${types.typePessoa}
+${types.typeVeiculo}
+
+type Query {
+  clientes: [Cliente!]!
+  fornecedores: [Fornecedor!]!
+  obterDadosPainelManutencao(filtros: FiltrosPainelInput): DadosPainelManutencao!
   }
 
-  type Query {
-    clients: [Client!]!
+type Mutation {
+    createCliente(data: CreateClienteInput!): Cliente!
+    createFornecedor(data: CreateFornecedorInput!): Fornecedor!
   }
 
-  input CreateClientInput {
-    nome: String!
-    unidade: String!
-    subunidade: String
-  }
+  scalar DateTime
+  scalar Decimal 
 
-  type Mutation {
-    createClient(data: CreateClientInput!): Client!
-  }
 `;
+
+

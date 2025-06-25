@@ -1,16 +1,16 @@
-// src/graphql/resolvers.ts
+// src/graphql/resolvers/cliente.ts
 
 import { FastifyInstance } from 'fastify';
 
-export function buildResolvers(fastify: FastifyInstance) {
+export function clienteResolvers(fastify: FastifyInstance) {
   return {
     Query: {
-      clients: async () => {
+      clientes: async () => {
         return fastify.prisma.cliente.findMany({ orderBy: { id: 'asc' } });
       },
     },
     Mutation: {
-      createClient: async (_: any, args: any) => {
+      createCliente: async (_: any, args: any) => {
         return fastify.prisma.cliente.create({
           data: args.data,
         });

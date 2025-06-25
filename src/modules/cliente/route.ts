@@ -1,6 +1,6 @@
 // modules/clients/route.ts
 import { FastifyInstance } from 'fastify';
-import { createClientController, listClientsController } from './controller';
+import { createClienteController, listClientesController } from './controller';
 
 /**
  * Rotas relacionadas ao domínio "Clientes"
@@ -16,8 +16,8 @@ import { createClientController, listClientsController } from './controller';
 
 export async function clientsRoute(fastify: FastifyInstance) {
   // 🔹 GET /api/clients - Lista clientes
-  fastify.get('/', listClientsController);
+  fastify.get('/', listClientesController);
 
   // 🔹 POST /api/clients - Cria cliente
-  fastify.post('/', createClientController);
+  fastify.post('/', createClienteController);
 }
