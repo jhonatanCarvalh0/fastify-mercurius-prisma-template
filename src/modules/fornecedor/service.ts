@@ -17,4 +17,3 @@ export async function createFornecedor(
   }
 ) {
   return fastify.prisma.fornecedor.create({ data });
-}
