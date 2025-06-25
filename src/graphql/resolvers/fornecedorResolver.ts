@@ -6,10 +6,10 @@ import { getFornecedores, createFornecedor } from '../../modules/fornecedor/serv
 export function fornecedorResolvers(fastify: FastifyInstance) {
   return {
     Query: {
-      fornecedores: () => getFornecedores(fastify),
+      fornecedores: async () => getFornecedores(fastify),
     },
     Mutation: {
-      createFornecedor: (_: any, args: any) => createFornecedor(fastify, args.data),
+      createFornecedor: async (_: any, args: any) => createFornecedor(fastify, args.data),
     },
   };
 }
