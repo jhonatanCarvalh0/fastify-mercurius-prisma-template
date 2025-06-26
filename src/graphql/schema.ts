@@ -5,10 +5,10 @@ export const typeDefs = /* GraphQL */ `
 
 ${types.typeCliente}
 ${types.typeFornecedor}
-${types.typePanelManutencao}
 ${types.typeOrdemServico}
 ${types.typePessoa}
 ${types.typeVeiculo}
+${types.typePanelManutencao}
 
 type Query {
   clientes: [Cliente!]!

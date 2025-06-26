@@ -1,49 +1,64 @@
-export const typePanelManutencao = `
-  type ResumoFinanceiro {
+// src/graphql/_schemaTypes/panel.manutencao.type.ts
+
+export const typePanelManutencao = /* GraphQL */ `
+  type DadosPainelManutencao {
+    title: String!
+    totalOS: Int!
+    totalVeiculosDistintos: Int!
+    valorTotal: Float!
+    custoMedio: Float!
     totalPecas: Float!
     totalMaoDeObra: Float!
     totalGeral: Float!
-    dataAtualizacao: String!
+
+    porTipoOS: [ItemResumo!]!
+    porSecretaria: [ItemResumo!]!
+    porOficina: [ItemResumo!]!
+    porModelo: [ItemResumo!]!
+
+    linhaDoTempo: [ItemSerieTempo!]!
+    dispersaoKmCusto: [DispersaoPonto!]!
+    frequenciaDiaHora: [FrequenciaHora!]!
+
+    totalBruto: Float!
+    totalComDesconto: Float!
+    percentualComDesconto: Float!
+
+    osSemNotaFiscal: [OrdemSemNota!]!
   }
 
-  type ItemAgregado {
+  type ItemResumo {
     nome: String!
-    valorTotal: Float!
-    porcentagem: Float
+    total: Float!
   }
 
-  type DadosGrafico {
-    categorias: [String!]!
-    valores: [Float!]!
-    porcentagens: [Float]
+  type ItemSerieTempo {
+    periodo: String!
+    total: Float!
   }
 
-  type DadosPainelManutencao {
-    titulo: String!
-    resumo: ResumoFinanceiro!
-    secretarias: [ItemAgregado!]!
-    oficinas: [ItemAgregado!]!
-    modelos: [ItemAgregado!]!
-    graficoBarras: DadosGrafico!
-    graficoPizza: DadosGrafico!
-    filtrosAplicados: FiltrosAplicados!
+  type DispersaoPonto {
+    kmHorimetro: Float!
+    custo: Float!
+  }
+
+  type FrequenciaHora {
+    diaSemana: String!
+    hora: Int!
+    quantidade: Int!
+  }
+
+  type OrdemSemNota {
+    id: Int!
+    cliente: String!
+    data: String!
+    motivo: String!
   }
 
   input FiltrosPainelInput {
-    secretaria: String
-    mes: String
+    secretaria: [String!]
+    tipoOs: [String!]
     dataInicio: String
     dataFim: String
-    marca: String
-    oficina: String
-    cidade: String
-    modelo: String
-    tipoOS: String
   }
-
-  type FiltrosAplicados {
-    tipoOS: [String!]
-    periodo: String
-  }
-
 `;
