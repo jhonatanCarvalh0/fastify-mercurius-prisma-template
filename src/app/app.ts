@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import cors from '@fastify/cors'
 import { registerGraphQL } from '../graphql';
 import { registerPlugins } from '../plugins/registerPlugins';
 import { registerRoutes } from '../routes/registerRoutes';
@@ -11,6 +12,9 @@ import { registerRoutes } from '../routes/registerRoutes';
 
 export async function buildApp() {
   const fastify = Fastify({ logger: true });
+  await fastify.register(cors, {
+    origin: true, // ou especifique seu frontend ex: 'http://localhost:5173'
+  })
 
   // 🧩 Registra plugins necessários
   await registerPlugins(fastify);
