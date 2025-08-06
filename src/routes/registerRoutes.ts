@@ -1,7 +1,7 @@
 // src/routes/index.ts
 
 import { FastifyInstance } from 'fastify';
-import { clientsRoute } from '../modules/cliente/route';
+import { clientsRoute } from '../modules/cliente REST API/route';
 
 /**
  * Diretriz:

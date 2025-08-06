@@ -1,7 +1,7 @@
 // src/graphql/resolvers/fornecedor.ts
 import { FastifyInstance } from 'fastify';
 
-import { getFornecedores, createFornecedor } from '../../modules/fornecedor/service';
+import { createFornecedor, getFornecedores } from './fornecedorService';
 
 export function fornecedorResolvers(fastify: FastifyInstance) {
   return {

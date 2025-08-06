@@ -2,9 +2,9 @@
 
 import { FastifyInstance } from 'fastify';
 
-import { clienteResolvers } from './resolvers/clienteResolver';
-import { fornecedorResolvers } from './resolvers/fornecedorResolver';
-import { painelManutencaoResolver } from './resolvers/painelManutencaoResolver';
+import { clienteResolvers } from './resolvers/general/cliente/clienteResolver';
+import { fornecedorResolvers } from './resolvers/general/fornecedor/fornecedorResolver';
+import { painelManutencaoResolver } from './resolvers/panels/manutencao/_panelManutencaoResolver';
 
 export function buildResolvers(fastify: FastifyInstance) {
   return {
