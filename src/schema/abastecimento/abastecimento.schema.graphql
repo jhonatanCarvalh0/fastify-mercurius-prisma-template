@@ -1,0 +1,78 @@
+# Define o tipo para os filtros que podemos receber
+input AbastecimentoFilters {
+  startDate: String
+  endDate: String
+  orgao: [String!]
+  combustivel: [String!]
+  condutor: [String!]
+  placa: [String!]
+}
+
+type KpiAbastecimentoData {
+  totalGasto: Float!
+  totalLitros: Float!
+  totalAbastecimentos: Int!
+}
+
+type CombustivelGasto {
+  tipo: String!
+  totalLitros: Float!
+  totalGasto: Float!
+}
+
+type OrgaoGastoAbastecimento {
+  name: String!
+  total: Float!
+}
+
+type GastoMesAbastecimento {
+  month: String!
+  total: Float!
+}
+
+type Abastecimento {
+  Data: String
+  Hora: String
+  KM: Float
+  KM_Anterior: Float
+  Numero_Cartao: String
+  Combustivel: String
+  Qtde_Combustivel_Abastecido: Float
+  Valor_Abastecimento: Float
+  Cidade_Posto: String
+  Nome_Posto: String
+  Endereco_Posto: String
+  Matricula_Condutor: String
+  Nome_Condutor: String
+  Orgao: String
+  Sub_Unidade: String
+  Modelo: String
+  Placa: String
+  Prefixo: String
+  Marca: String
+  Renavam: String
+  Ano: Int
+  Capacidade_Tanque: Float
+  Chassi: String
+  Cor: String
+  Motorizacao: String
+  Cidade_Veiculo: String
+  Centro_Custo: String
+}
+
+type FilterOptionsAbastecimento {
+  orgao: [String!]
+  condutor: [String!]
+  placa: [String!]
+}
+
+extend type Query {
+  abastecimentos(filters: AbastecimentoFilters): [Abastecimento!]
+  kpisAbastecimento(filters: AbastecimentoFilters): KpiAbastecimentoData!
+  gastoPorCombustivel(filters: AbastecimentoFilters): [CombustivelGasto!]
+  gastoPorOrgao(filters: AbastecimentoFilters): [OrgaoGastoAbastecimento!]
+  gastoMensalAbastecimento(
+    filters: AbastecimentoFilters
+  ): [GastoMesAbastecimento!]
+  filterOptionsAbastecimento: FilterOptionsAbastecimento!
+}
