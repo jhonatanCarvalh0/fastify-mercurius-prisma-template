@@ -49,6 +49,9 @@ type AbastecimentoColumn {
 
 type AbastecimentoKpis {
   totalCost: Float!
+  fuelConsumed: Float!  
+  kilometersDriven: Float! 
+  vehiclesCount: Int! 
   dailyAverageCost: Float!
   suppliesCount: Int!
   lastUpdate: DateTime!
@@ -64,6 +67,36 @@ type CostByVehicle {
   total: Float!
 }
 
+type CostByDepartment {
+  department: String!
+  total: Float!
+}
+
+type CostByCity {
+  city: String!
+  total: Float!
+}
+
+type CostByGasStation {
+  name: String!
+  total: Float!
+}
+
+type CostByPlate {
+  plate: String!
+  total: Float!
+}
+
+type CostByDate {
+  date: String! # yyyy-mm-dd
+  total: Float!
+}
+
+type CostOverTime {
+  date: String! # yyyy-mm-dd
+  total: Float!
+}
+
 type Query {
   abastecimentos(
     limit: Int
@@ -75,7 +108,6 @@ type Query {
 
   abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
   abastecimentoKpis: AbastecimentoKpis!
-  costByVehicle: [CostByVehicle!]!
 
   departmentOptions: [FilterOption]
   vehiclePlateOptions: [FilterOption]
@@ -83,6 +115,13 @@ type Query {
   gasStationCityOptions: [FilterOption]
   gasStationNameOptions: [FilterOption]
 
+  costByVehicle(filters: AbastecimentoFiltersInput): [CostByVehicle!]!
+  costByDepartment(filters: AbastecimentoFiltersInput): [CostByDepartment!]!
+  costByCity(filters: AbastecimentoFiltersInput): [CostByCity!]!
+  costByGasStation(filters: AbastecimentoFiltersInput): [CostByGasStation!]!
+  costByPlate(filters: AbastecimentoFiltersInput): [CostByPlate!]!
+  costByDate(filters: AbastecimentoFiltersInput): [CostByDate!]!
+  costOverTime(filters: AbastecimentoFiltersInput): [CostOverTime!]!
 
   abastecimentosColumns: [AbastecimentoColumn!]!
 }

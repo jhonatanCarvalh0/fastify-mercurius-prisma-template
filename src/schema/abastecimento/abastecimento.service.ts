@@ -53,12 +53,21 @@ export class AbastecimentoService {
     const totalLitros = data.reduce((acc, item) => acc + (item.fuelVolume || 0), 0);
     const totalAbastecimentos = data.length;
 
+    // Vamos calcular veículos únicos aqui
+    const uniqueVehicles = new Set(data.map(item => item.vehicle?.plate).filter(Boolean));
+
+    // Se tiver campo para quilômetros rodados, soma aqui (exemplo: item.kilometers)
+    const totalKilometers = data.reduce((acc, item) => acc + (item.vehicle.km || 0), 0);
+
     return {
       totalGasto,
       totalLitros,
       totalAbastecimentos,
+      vehiclesCount: uniqueVehicles.size,
+      kilometersDriven: totalKilometers,
     };
   }
+
 
   public getGastoPorOrgao(filters?: AbastecimentoFilters) {
     const data = this.getAbastecimentos(filters);

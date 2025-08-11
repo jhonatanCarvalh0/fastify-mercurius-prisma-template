@@ -14,7 +14,7 @@ export interface Abastecimento {
   Matricula_Condutor: string;
   Nome_Condutor: string;
   Orgao: string;
-  OrgaoUnificado?: string; // pode vir do processor se quiser unificar
+  OrgaoUnificado?: string;
   Sub_Unidade: string;
   Modelo: string;
   Placa: string;
@@ -42,6 +42,7 @@ export interface AbastecimentoProcessed {
     plate: string;
     model: string;
     brand: string;
+    km: number;
   };
 
   gasStation: {

@@ -12,7 +12,7 @@ const abastecimentoResolvers = () => ({
     ) => {
       let data = abastecimentoService.getAbastecimentos(filters);
 
-      // ordenação simples (se precisar algo mais complexo, mover pro service)
+      // ordenação simples
       if (sortBy) {
         data = [ ...data ].sort((a, b) => {
           const av = (a as Record<string, any>)[ sortBy ];
@@ -37,16 +37,27 @@ const abastecimentoResolvers = () => ({
       return filtered.length;
     },
 
-    // KPIs - adaptando nome e campos para o front
+    // KPIs
     abastecimentoKpis: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
-      const { totalGasto, totalLitros, totalAbastecimentos } = abastecimentoService.getKpis(filters);
+      const {
+        totalGasto,
+        totalLitros,
+        totalAbastecimentos,
+        vehiclesCount,
+        kilometersDriven,
+      } = abastecimentoService.getKpis(filters);
+
       return {
         totalCost: totalGasto,
-        dailyAverageCost: totalGasto / (totalAbastecimentos || 1),
+        fuelConsumed: totalLitros,
         suppliesCount: totalAbastecimentos,
-        lastUpdate: new Date()
+        dailyAverageCost: totalGasto / (totalAbastecimentos || 1),
+        vehiclesCount,
+        kilometersDriven,
+        lastUpdate: new Date(),
       };
     },
+
 
     // opções de filtro
     vehiclePlateOptions: () => {
@@ -80,6 +91,85 @@ const abastecimentoResolvers = () => ({
       }, {});
       return Object.entries(totals).map(([ vehicle, total ]) => ({ vehicle, total }));
     },
+
+    costByDepartment: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        const department = item.department || "N/A";
+        acc[ department ] = (acc[ department ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+      return Object.entries(totals).map(([ department, total ]) => ({ department, total }));
+    },
+
+    costByCity: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        const city = item.gasStation?.city || "N/A";
+        acc[ city ] = (acc[ city ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+      return Object.entries(totals).map(([ city, total ]) => ({ city, total }));
+    },
+
+    costByGasStation: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        const name = item.gasStation?.name || "N/A";
+        acc[ name ] = (acc[ name ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+      return Object.entries(totals).map(([ name, total ]) => ({ name, total }));
+    },
+
+    costByPlate: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        const plate = item.vehicle?.plate || "N/A";
+        acc[ plate ] = (acc[ plate ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+      return Object.entries(totals).map(([ plate, total ]) => ({ plate, total }));
+    },
+
+    costByDate: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        let dateStr = "N/A";
+        if (item.datetime) {
+          const dateObj = new Date(item.datetime);
+          if (!isNaN(dateObj.getTime())) {
+            dateStr = dateObj.toISOString().substring(0, 10);
+          }
+        }
+        acc[ dateStr ] = (acc[ dateStr ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+      return Object.entries(totals).map(([ date, total ]) => ({ date, total }));
+    },
+
+
+    costOverTime: (_: unknown, { filters }: { filters?: any }) => {
+      const data = abastecimentoService.getAbastecimentos(filters);
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        let dateStr = "N/A";
+        if (item.datetime) {
+          const dateObj = new Date(item.datetime);
+          if (!isNaN(dateObj.getTime())) {
+            dateStr = dateObj.toISOString().substring(0, 10);
+          }
+        }
+        acc[ dateStr ] = (acc[ dateStr ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
+
+      const ordered = Object.entries(totals)
+        .filter(([ date ]) => date !== "N/A")
+        .sort(([ a ], [ b ]) => a.localeCompare(b));
+
+      return ordered.map(([ date, total ]) => ({ date, total }));
+    },
+
 
     abastecimentosColumns: () => {
       return [

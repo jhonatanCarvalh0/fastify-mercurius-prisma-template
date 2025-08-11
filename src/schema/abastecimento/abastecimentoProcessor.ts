@@ -48,7 +48,7 @@ export const AbastecimentoProcessor = {
 
     processed[ 'Ano' ] = AbastecimentoProcessor.parseYear(row[ 'Ano' ]);
 
-    const originalOrgao = String(processed[ 'Unidade' ]);
+    const originalOrgao = String(processed[ 'Sub_Unidade' ]);
     processed[ 'OrgaoUnificado' ] = unificationMap.get(originalOrgao) || originalOrgao;
 
 
