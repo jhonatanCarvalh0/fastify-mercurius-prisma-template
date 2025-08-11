@@ -4,6 +4,20 @@ import { loadAbastecimento } from '../../data/loadAbastecimento';
 import { mapToProcessed } from './utils/mapToProcessed';
 import { AbastecimentoProcessor } from './abastecimentoProcessor';
 
+function parseDateTimeBR(dateTimeStr: string): Date | null {
+  if (!dateTimeStr) return null;
+  // data e hora separados por espaço
+  const [ datePart, timePart ] = dateTimeStr.split(' ');
+  if (!datePart) return null;
+  const [ day, month, year ] = datePart.split('/').map(Number);
+  if ([ day, month, year ].some(isNaN)) return null;
+
+  // hora pode ser undefined
+  const [ hour = 0, minute = 0, second = 0 ] = timePart ? timePart.split(':').map(Number) : [ 0, 0, 0 ];
+
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
 export class AbastecimentoService {
   private rawData: any[];
   private processedData: AbastecimentoProcessed[];
@@ -18,30 +32,45 @@ export class AbastecimentoService {
 
     if (!filters) return filtered;
 
-    if (filters.startDate && filters.endDate) {
-      const start = new Date(filters.startDate).getTime();
-      const end = new Date(filters.endDate).getTime();
+    if (filters.dateRange) {
+      const from = new Date(filters.dateRange.from);
+      const to = new Date(filters.dateRange.to);
 
       filtered = filtered.filter(item => {
-        const dt = new Date(item.datetime).getTime();
-        return dt >= start && dt <= end;
+        if (!item.datetime) return false;
+        const dt = parseDateTimeBR(item.datetime);
+        if (!dt) return false;
+        return dt >= from && dt <= to;
       });
     }
 
-    if (filters.orgao && filters.orgao.length > 0) {
-      filtered = filtered.filter(item => filters.orgao!.includes(item.department));
+
+    if (filters.department && filters.department.length > 0) {
+      filtered = filtered.filter(item => filters.department!.includes(item.department));
     }
 
-    if (filters.combustivel && filters.combustivel.length > 0) {
-      filtered = filtered.filter(item => filters.combustivel!.includes(item.fuelType));
+    if (filters.fuelType && filters.fuelType.length > 0) {
+      filtered = filtered.filter(item => filters.fuelType!.includes(item.fuelType));
     }
 
-    if (filters.condutor && filters.condutor.length > 0) {
-      filtered = filtered.filter(item => filters.condutor!.includes(item.driverName));
+    if (filters.driverName) {
+      filtered = filtered.filter(item => item.driverName === filters.driverName);
     }
 
-    if (filters.placa && filters.placa.length > 0) {
-      filtered = filtered.filter(item => filters.placa!.includes(item.vehicle.plate));
+    if (filters.vehiclePlate && filters.vehiclePlate.length > 0) {
+      filtered = filtered.filter(item => filters.vehiclePlate!.includes(item.vehicle?.plate));
+    }
+
+    if (filters.vehicleModel && filters.vehicleModel.length > 0) {
+      filtered = filtered.filter(item => filters.vehicleModel!.includes(item.vehicle?.model));
+    }
+
+    if (filters.gasStationCity && filters.gasStationCity.length > 0) {
+      filtered = filtered.filter(item => filters.gasStationCity!.includes(item.gasStation?.city));
+    }
+
+    if (filters.gasStationName && filters.gasStationName.length > 0) {
+      filtered = filtered.filter(item => filters.gasStationName!.includes(item.gasStation?.name));
     }
 
     return filtered;

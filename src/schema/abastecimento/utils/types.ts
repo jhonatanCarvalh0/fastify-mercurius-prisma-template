@@ -55,12 +55,16 @@ export interface AbastecimentoProcessed {
 }
 
 export interface AbastecimentoFilters {
+  dateRange: { from: string; to: string; };
+  fuelType: string;
+  vehiclePlate: string;
+  driverName: string;
+  department:  string ; 
+  vehicleModel: [ string ];
+  gasStationCity: [ string ];
+  gasStationName: [ string ];
   startDate?: string;
   endDate?: string;
-  orgao?: string[];
-  combustivel?: string[];
-  condutor?: string[];
-  placa?: string[];
 }
 
 export interface ProcessedAbastecimentoRow {
