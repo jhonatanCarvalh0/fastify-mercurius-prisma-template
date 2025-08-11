@@ -32,8 +32,10 @@ const abastecimentoResolvers = () => ({
     },
 
     // total de registros
-    abastecimentosCount: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) =>
-      abastecimentoService.getAbastecimentos(filters).length,
+    abastecimentosCount: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
+      const filtered = abastecimentoService.getAbastecimentos(filters);
+      return filtered.length;
+    },
 
     // KPIs - adaptando nome e campos para o front
     abastecimentoKpis: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
