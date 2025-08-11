@@ -7,11 +7,13 @@ input DateRangeInput {
 
 input AbastecimentoFiltersInput {
   dateRange: DateRangeInput
-  status: [String!]
   fuelType: [String!]
   vehiclePlate: String
   driverName: String
-  orgao: [String!]
+  department: [String!]     # ou String, se quiser só um valor
+  vehicleModel: [String]
+  gasStationCity: [String]
+  gasStationName: [String]
 }
 
 type Vehicle {
@@ -31,7 +33,6 @@ type Abastecimento {
   cost: Float
   fuelVolume: Float
   fuelType: String
-  status: String
   driverName: String
   vehicle: Vehicle
   gasStation: GasStation
@@ -54,17 +55,12 @@ type AbastecimentoKpis {
 }
 
 type FilterOption {
-  value: String!
-  label: String!
+  value: String
+  label: String
 }
 
 type CostByVehicle {
   vehicle: String!
-  total: Float!
-}
-
-type CostByStatus {
-  status: String!
   total: Float!
 }
 
@@ -78,14 +74,15 @@ type Query {
   ): [Abastecimento!]!
 
   abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
-
   abastecimentoKpis: AbastecimentoKpis!
-
-  vehicleOptions: [FilterOption!]!
-  statusOptions: [FilterOption!]!
-
   costByVehicle: [CostByVehicle!]!
-  costByStatus: [CostByStatus!]!
+
+  departmentOptions: [FilterOption]
+  vehiclePlateOptions: [FilterOption]
+  vehicleModelOptions: [FilterOption]
+  gasStationCityOptions: [FilterOption]
+  gasStationNameOptions: [FilterOption]
+
 
   abastecimentosColumns: [AbastecimentoColumn!]!
 }

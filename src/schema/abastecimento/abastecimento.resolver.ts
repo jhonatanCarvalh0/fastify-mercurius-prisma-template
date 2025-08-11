@@ -48,17 +48,26 @@ const abastecimentoResolvers = () => ({
       };
     },
 
-    // opções de filtro - separando em vehicleOptions e statusOptions
-    vehicleOptions: () => {
+    // opções de filtro
+    vehiclePlateOptions: () => {
       const placas = abastecimentoService.getFilterOptions().placa;
       return placas.map(p => ({ value: p, label: p }));
     },
-    statusOptions: () => {
-      // Se status não estiver no service, pega do processedData
-      const statusList = Array.from(new Set(
-        (abastecimentoService as any).processedData.map((item: any) => item.status).filter(Boolean)
-      )).sort();
-      return statusList.map(s => ({ value: s, label: s }));
+    departmentOptions: () => {
+      const departments = abastecimentoService.getFilterOptions().orgao;
+      return departments.map(d => ({ value: d, label: d }));
+    },
+    vehicleModelOptions: () => {
+      const models = abastecimentoService.getFilterOptions().modelo;
+      return models.map(m => ({ value: m, label: m }));
+    },
+    gasStationCityOptions: () => {
+      const cities = abastecimentoService.getFilterOptions().cidadePosto;
+      return cities.map(c => ({ value: c, label: c }));
+    },
+    gasStationNameOptions: () => {
+      const names = abastecimentoService.getFilterOptions().nomePosto;
+      return names.map(n => ({ value: n, label: n }));
     },
 
     // gráficos
@@ -72,23 +81,12 @@ const abastecimentoResolvers = () => ({
       return Object.entries(totals).map(([ vehicle, total ]) => ({ vehicle, total }));
     },
 
-    costByStatus: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
-      const data = abastecimentoService.getAbastecimentos(filters);
-      const totals = data.reduce<Record<string, number>>((acc, item) => {
-        const status = item.status || "N/A";
-        acc[ status ] = (acc[ status ] || 0) + (item.cost || 0);
-        return acc;
-      }, {});
-      return Object.entries(totals).map(([ status, total ]) => ({ status, total }));
-    },
-
     abastecimentosColumns: () => {
       return [
         { headerLabel: "Data", accessor: "datetime", isSortable: true, dataType: "date" },
         { headerLabel: "Custo", accessor: "cost", isSortable: true, dataType: "currency" },
         { headerLabel: "Volume", accessor: "fuelVolume", isSortable: true, dataType: "number" },
         { headerLabel: "Tipo Combustível", accessor: "fuelType", isSortable: true, dataType: "string" },
-        { headerLabel: "Status", accessor: "status", isSortable: true, dataType: "string" },
         { headerLabel: "Motorista", accessor: "driverName", isSortable: true, dataType: "string" },
         { headerLabel: "Placa", accessor: "vehicle.plate", isSortable: true, dataType: "string" },
         { headerLabel: "Modelo", accessor: "vehicle.model", isSortable: true, dataType: "string" },

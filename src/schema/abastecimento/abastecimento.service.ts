@@ -94,13 +94,17 @@ export class AbastecimentoService {
 
   public getFilterOptions() {
     const orgaoOptions = Array.from(new Set(this.processedData.map(item => item.department).filter(Boolean))).sort();
-    const condutorOptions = Array.from(new Set(this.processedData.map(item => item.driverName).filter(Boolean))).sort();
     const placaOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.plate).filter(Boolean))).sort();
+    const modelOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.model).filter(Boolean))).sort();
+    const gasStationCityOptions = Array.from(new Set(this.processedData.map(item => item.gasStation.city).filter(Boolean))).sort();
+    const gasStationNameOptions = Array.from(new Set(this.processedData.map(item => item.gasStation.name).filter(Boolean))).sort();
 
     return {
       orgao: orgaoOptions,
-      condutor: condutorOptions,
       placa: placaOptions,
+      modelo: modelOptions,
+      cidadePosto: gasStationCityOptions,
+      nomePosto: gasStationNameOptions
     };
   }
 }

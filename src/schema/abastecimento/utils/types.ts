@@ -28,8 +28,6 @@ export interface Abastecimento {
   Motorizacao: string;
   Cidade_Veiculo: string;
   Centro_Custo: string;
-  Status?: string; // caso tenha status
-  // outros campos do CSV que tiver
 }
 
 export interface AbastecimentoProcessed {
@@ -38,7 +36,6 @@ export interface AbastecimentoProcessed {
   cost: number;
   fuelVolume: number;
   fuelType: string;
-  status?: string;
   driverName: string;
 
   vehicle: {

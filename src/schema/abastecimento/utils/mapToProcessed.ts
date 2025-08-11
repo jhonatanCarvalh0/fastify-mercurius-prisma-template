@@ -9,8 +9,6 @@ export function mapToProcessed(data: ProcessedAbastecimentoRow[]): Abastecimento
     cost: Number(row.Valor_Abastecimento || 0),
     fuelVolume: Number(row.Qtde_Combustivel_Abastecido || 0),
     fuelType: row.Combustivel || '',
-    status: row.Status || undefined,
-
     driverName: row.Nome_Condutor || '',
 
     vehicle: {
