@@ -12,9 +12,6 @@ input AbastecimentoFiltersInput {
   vehiclePlate: String
   driverName: String
   orgao: [String!]
-  combustivel: [String!]
-  condutor: [String!]
-  placa: [String!]
 }
 
 type Vehicle {
@@ -36,10 +33,8 @@ type Abastecimento {
   fuelType: String
   status: String
   driverName: String
-
   vehicle: Vehicle
   gasStation: GasStation
-
   department: String
   costCenter: String
 }
@@ -51,32 +46,26 @@ type AbastecimentoColumn {
   dataType: String!
 }
 
-type KpiAbastecimentoData {
-  totalGasto: Float!
-  totalLitros: Float!
-  totalAbastecimentos: Int!
+type AbastecimentoKpis {
+  totalCost: Float!
+  dailyAverageCost: Float!
+  suppliesCount: Int!
+  lastUpdate: DateTime!
 }
 
-type CombustivelGasto {
-  tipo: String!
-  totalLitros: Float!
-  totalGasto: Float!
+type FilterOption {
+  value: String!
+  label: String!
 }
 
-type OrgaoGastoAbastecimento {
-  name: String!
+type CostByVehicle {
+  vehicle: String!
   total: Float!
 }
 
-type GastoMesAbastecimento {
-  month: String!
+type CostByStatus {
+  status: String!
   total: Float!
-}
-
-type FilterOptionsAbastecimento {
-  orgao: [String!]
-  condutor: [String!]
-  placa: [String!]
 }
 
 type Query {
@@ -88,19 +77,15 @@ type Query {
     filters: AbastecimentoFiltersInput
   ): [Abastecimento!]!
 
-  abastecimentosColumns: [AbastecimentoColumn!]!
-
   abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
 
-  kpisAbastecimento(filters: AbastecimentoFiltersInput): KpiAbastecimentoData!
+  abastecimentoKpis: AbastecimentoKpis!
 
-  gastoPorCombustivel(filters: AbastecimentoFiltersInput): [CombustivelGasto!]
+  vehicleOptions: [FilterOption!]!
+  statusOptions: [FilterOption!]!
 
-  gastoPorOrgao(filters: AbastecimentoFiltersInput): [OrgaoGastoAbastecimento!]
+  costByVehicle: [CostByVehicle!]!
+  costByStatus: [CostByStatus!]!
 
-  gastoMensalAbastecimento(
-    filters: AbastecimentoFiltersInput
-  ): [GastoMesAbastecimento!]
-
-  filterOptionsAbastecimento: FilterOptionsAbastecimento!
+  abastecimentosColumns: [AbastecimentoColumn!]!
 }
