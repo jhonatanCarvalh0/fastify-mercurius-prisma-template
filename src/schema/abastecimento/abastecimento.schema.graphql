@@ -97,6 +97,22 @@ type CostOverTime {
   total: Float!
 }
 
+type RankingByDate {
+  date: String! # yyyy-mm-dd
+  total: Float!
+}
+
+type RankingByPlate {
+  plate: String!
+  total: Float!
+  quantity: Int!
+}
+
+type RankingByDepartment {
+  department: String!
+  total: Float!
+}
+
 type Query {
   abastecimentos(
     limit: Int
@@ -107,7 +123,7 @@ type Query {
   ): [Abastecimento!]!
 
   abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
-  abastecimentoKpis: AbastecimentoKpis!
+  abastecimentoKpis(filters: AbastecimentoFiltersInput): AbastecimentoKpis!
 
   departmentOptions: [FilterOption]
   vehiclePlateOptions: [FilterOption]
@@ -122,6 +138,10 @@ type Query {
   costByPlate(filters: AbastecimentoFiltersInput): [CostByPlate!]!
   costByDate(filters: AbastecimentoFiltersInput): [CostByDate!]!
   costOverTime(filters: AbastecimentoFiltersInput): [CostOverTime!]!
+
+  rankingByDate(filters: AbastecimentoFiltersInput): [RankingByDate!]!
+  rankingByPlate(filters: AbastecimentoFiltersInput): [RankingByPlate!]!
+  rankingByDepartment(filters: AbastecimentoFiltersInput): [RankingByDepartment!]!
 
   abastecimentosColumns: [AbastecimentoColumn!]!
 }

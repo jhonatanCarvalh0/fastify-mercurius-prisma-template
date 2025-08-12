@@ -170,6 +170,56 @@ const abastecimentoResolvers = () => ({
       return ordered.map(([ date, total ]) => ({ date, total }));
     },
 
+    rankingByDate: async (_: unknown, { filters }: { filters?: any }) => {
+      const data = await abastecimentoService.getAbastecimentos(filters);
+
+      // Agrupa por data yyyy-mm-dd somando total
+      const map = new Map<string, number>();
+      data.forEach(({ datetime, cost }) => {
+        if (!datetime) return;
+        const date = datetime.slice(0, 10);
+        map.set(date, (map.get(date) || 0) + cost);
+      });
+
+      return Array.from(map, ([ date, total ]) => ({ date, total }));
+    },
+
+    rankingByPlate: async (_: unknown, { filters }: { filters?: any }) => {
+      const data = await abastecimentoService.getAbastecimentos(filters);
+
+      // Agrupa por placa somando total e contando quantidade
+      const map = new Map<string, { total: number; quantity: number }>();
+
+      data.forEach(({ vehicle, cost }) => {
+        if (!vehicle?.plate) return;
+        const plate = vehicle.plate;
+        if (!map.has(plate)) {
+          map.set(plate, { total: 0, quantity: 0 });
+        }
+        const entry = map.get(plate)!;
+        entry.total += cost;
+        entry.quantity += 1;
+      });
+
+      return Array.from(map, ([ plate, { total, quantity } ]) => ({
+        plate,
+        total,
+        quantity,
+      }));
+    },
+
+    rankingByDepartment: async (_: unknown, { filters }: { filters?: any }) => {
+      const data = await abastecimentoService.getAbastecimentos(filters);
+
+      // Agrupa por departamento somando total
+      const map = new Map<string, number>();
+      data.forEach(({ department, cost }) => {
+        if (!department) return;
+        map.set(department, (map.get(department) || 0) + cost);
+      });
+
+      return Array.from(map, ([ department, total ]) => ({ department, total }));
+    },
 
     abastecimentosColumns: () => {
       return [
