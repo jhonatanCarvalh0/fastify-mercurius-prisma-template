@@ -15,7 +15,7 @@ export function mapToProcessed(data: ProcessedAbastecimentoRow[]): Abastecimento
       plate: row.Placa || '',
       model: row.Modelo || '',
       brand: row.Marca || '',
-      km: row.KM || 0,
+      km: row.KM - row.KM_Anterior,
     },
 
     gasStation: {
