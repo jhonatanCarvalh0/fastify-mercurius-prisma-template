@@ -173,15 +173,25 @@ const abastecimentoResolvers = () => ({
     rankingByDate: async (_: unknown, { filters }: { filters?: any }) => {
       const data = await abastecimentoService.getAbastecimentos(filters);
 
-      // Agrupa por data yyyy-mm-dd somando total
-      const map = new Map<string, number>();
-      data.forEach(({ datetime, cost }) => {
-        if (!datetime) return;
-        const date = datetime.slice(0, 10);
-        map.set(date, (map.get(date) || 0) + cost);
-      });
+      // agrupa custo por data
+      const totals = data.reduce<Record<string, number>>((acc, item) => {
+        let dateStr = "N/A";
+        if (item.datetime) {
+          const dateObj = new Date(item.datetime);
+          if (!isNaN(dateObj.getTime())) {
+            dateStr = dateObj.toISOString().substring(0, 10);
+          }
+        }
+        acc[ dateStr ] = (acc[ dateStr ] || 0) + (item.cost || 0);
+        return acc;
+      }, {});
 
-      return Array.from(map, ([ date, total ]) => ({ date, total }));
+      // filtra e ordena em ordem crescente pela data ISO (yyyy-mm-dd)
+      const ordered = Object.entries(totals)
+        .filter(([ date ]) => date !== "N/A")
+        .sort(([ a ], [ b ]) => a.localeCompare(b));
+
+      return ordered.map(([ date, total ]) => ({ date, total }));
     },
 
     rankingByPlate: async (_: unknown, { filters }: { filters?: any }) => {
@@ -205,7 +215,11 @@ const abastecimentoResolvers = () => ({
         plate,
         total,
         quantity,
-      }));
+      })).sort((a, b) => {
+        // Ordena primeiro pelo total decrescente, depois pela quantidade decrescente
+        if (b.total !== a.total) return b.total - a.total;
+        return b.quantity - a.quantity;
+      });;
     },
 
     rankingByDepartment: async (_: unknown, { filters }: { filters?: any }) => {
@@ -218,7 +232,7 @@ const abastecimentoResolvers = () => ({
         map.set(department, (map.get(department) || 0) + cost);
       });
 
-      return Array.from(map, ([ department, total ]) => ({ department, total }));
+      return Array.from(map, ([ department, total ]) => ({ department, total })).sort((a, b) => b.total - a.total);
     },
 
     abastecimentosColumns: () => {
