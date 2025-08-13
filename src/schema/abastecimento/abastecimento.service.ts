@@ -170,7 +170,6 @@ export class AbastecimentoService {
       totals[ ym ] = (totals[ ym ] || 0) + (Number(item.cost) || 0);
     }
     const monthsFound = Array.from(new Set(data.map(d => this.extractYearMonth(d.datetime)).filter(Boolean))).sort();
-    console.log('monthsFound:', monthsFound);
 
     // ordena por YYYY-MM crescente e retorna array no formato { date: 'YYYY-MM', total }
     return Object.entries(totals)

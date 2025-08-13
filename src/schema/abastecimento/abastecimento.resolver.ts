@@ -224,7 +224,7 @@ const abastecimentoResolvers = () => ({
       return [
         { headerLabel: "Data", accessor: "datetime", isSortable: true, dataType: "date" },
         { headerLabel: "Custo", accessor: "cost", isSortable: true, dataType: "currency" },
-        { headerLabel: "Volume", accessor: "fuelVolume", isSortable: true, dataType: "number" },
+        { headerLabel: "Litros", accessor: "fuelVolume", isSortable: true, dataType: "number" },
         { headerLabel: "Tipo Combustível", accessor: "fuelType", isSortable: true, dataType: "string" },
         { headerLabel: "Motorista", accessor: "driverName", isSortable: true, dataType: "string" },
         { headerLabel: "Placa", accessor: "vehicle.plate", isSortable: true, dataType: "string" },
@@ -233,7 +233,7 @@ const abastecimentoResolvers = () => ({
         { headerLabel: "Posto", accessor: "gasStation.name", isSortable: true, dataType: "string" },
         { headerLabel: "Cidade", accessor: "gasStation.city", isSortable: true, dataType: "string" },
         { headerLabel: "Órgão/Departamento", accessor: "department", isSortable: true, dataType: "string" },
-        { headerLabel: "Centro de Custo", accessor: "costCenter", isSortable: true, dataType: "string" }
+        // { headerLabel: "Centro de Custo", accessor: "costCenter", isSortable: true, dataType: "string" }
       ];
     }
   }
