@@ -54,10 +54,9 @@ const abastecimentoResolvers = () => ({
         dailyAverageCost: totalGasto / (totalAbastecimentos || 1),
         vehiclesCount,
         kilometersDriven,
-        lastUpdate: new Date(),
+        lastUpdate: abastecimentoService.getLastUpdate(),
       };
     },
-
 
     // opções de filtro
     vehiclePlateOptions: () => {

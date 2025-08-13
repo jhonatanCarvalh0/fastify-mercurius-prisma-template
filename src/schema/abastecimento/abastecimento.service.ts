@@ -76,6 +76,23 @@ export class AbastecimentoService {
     return filtered;
   }
 
+  public getLastUpdate() {
+    // Supondo que rawData tenha um campo 'Data' no formato 'DD/MM/YYYY'
+    const dates = this.rawData
+      .map(item => item.Data)
+      .filter(Boolean)
+      .map((dateStr: string) => {
+        const [ day, month, year ] = dateStr.split('/').map(Number);
+        return new Date(year, month - 1, day);
+      })
+      .filter((date: Date) => !isNaN(date.getTime()));
+
+    if (dates.length === 0) return null;
+
+    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    return latestDate;
+  }
+
   public getKpis(filters?: AbastecimentoFilters) {
     const data = this.getAbastecimentos(filters);
     const totalGasto = data.reduce((acc, item) => acc + (item.cost || 0), 0);
