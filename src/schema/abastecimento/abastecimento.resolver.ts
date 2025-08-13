@@ -229,8 +229,8 @@ const abastecimentoResolvers = () => ({
         { headerLabel: "Placa", accessor: "vehicle.plate", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehiclePlate" },
         { headerLabel: "Modelo", accessor: "vehicle.model", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehicleModel" },
         { headerLabel: "Marca", accessor: "vehicle.brand", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehicleBrand" },
-        { headerLabel: "Posto", accessor: "gasStation.name", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStation.name" },
-        { headerLabel: "Cidade", accessor: "gasStation.city", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStation.city" },
+        { headerLabel: "Posto", accessor: "gasStation.name", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStationName" },
+        { headerLabel: "Cidade", accessor: "gasStation.city", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStationCity" },
         { headerLabel: "Órgão/Departamento", accessor: "department", isSortable: true, dataType: "string", isFilterable: true, filterKey: "department" },
         // { headerLabel: "Centro de Custo", accessor: "costCenter", isSortable: true, dataType: "string", isFilterable: true, filterKey: "costCenter" },
       ];
