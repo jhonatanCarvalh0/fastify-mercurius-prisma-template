@@ -149,25 +149,10 @@ const abastecimentoResolvers = () => ({
     },
 
 
-    costOverTime: (_: unknown, { filters }: { filters?: any }) => {
-      const data = abastecimentoService.getAbastecimentos(filters);
-      const totals = data.reduce<Record<string, number>>((acc, item) => {
-        let dateStr = "N/A";
-        if (item.datetime) {
-          const dateObj = new Date(item.datetime);
-          if (!isNaN(dateObj.getTime())) {
-            dateStr = dateObj.toISOString().substring(0, 10);
-          }
-        }
-        acc[ dateStr ] = (acc[ dateStr ] || 0) + (item.cost || 0);
-        return acc;
-      }, {});
+    // abastecimento.resolvers.ts
 
-      const ordered = Object.entries(totals)
-        .filter(([ date ]) => date !== "N/A")
-        .sort(([ a ], [ b ]) => a.localeCompare(b));
-
-      return ordered.map(([ date, total ]) => ({ date, total }));
+    costOverTime: async (_: unknown, { filters }: { filters?: any }) => {
+      return abastecimentoService.getCostOverTimeGroupedByMonth(filters);
     },
 
     rankingByDate: async (_: unknown, { filters }: { filters?: any }) => {

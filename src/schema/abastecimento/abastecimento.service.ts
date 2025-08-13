@@ -130,6 +130,54 @@ export class AbastecimentoService {
       });
   }
 
+  private extractYearMonth(datetime: any): string | null {
+    if (!datetime && datetime !== 0) return null;
+    const s = String(datetime).trim();
+
+    // 1) YYYY-MM-DD ou YYYY-MM-DDTHH:MM:SS... -> pega YYYY-MM direto
+    const ymdMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (ymdMatch) return `${ymdMatch[ 1 ]}-${ymdMatch[ 2 ]}`;
+
+    // 2) DD/MM/YYYY ou DD/MM/YYYY HH:MM:SS -> transforma para YYYY-MM
+    const dmyMatch = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (dmyMatch) {
+      const [ , dd, mm, yyyy ] = dmyMatch;
+      return `${yyyy}-${mm}`;
+    }
+
+    // 3) Fallback: tenta criar Date e extrair componentes LOCAIS (para evitar shift do toISOString)
+    const dateObj = new Date(s);
+    if (!isNaN(dateObj.getTime())) {
+      const yyyy = dateObj.getFullYear();
+      const mm = String(dateObj.getMonth() + 1).padStart(2, '0'); // getMonth é local
+      return `${yyyy}-${mm}`;
+    }
+
+    // Não foi possível extrair
+    return null;
+  }
+
+  async getCostOverTimeGroupedByMonth(filters?: any) {
+    const data: AbastecimentoProcessed[] = await this.getAbastecimentos(filters);
+
+    const totals: Record<string, number> = {};
+
+    for (const item of data) {
+      const ym = this.extractYearMonth(item.datetime);
+      if (!ym) {
+        continue;
+      }
+      totals[ ym ] = (totals[ ym ] || 0) + (Number(item.cost) || 0);
+    }
+    const monthsFound = Array.from(new Set(data.map(d => this.extractYearMonth(d.datetime)).filter(Boolean))).sort();
+    console.log('monthsFound:', monthsFound);
+
+    // ordena por YYYY-MM crescente e retorna array no formato { date: 'YYYY-MM', total }
+    return Object.entries(totals)
+      .sort(([ a ], [ b ]) => a.localeCompare(b))
+      .map(([ date, total ]) => ({ date, total }));
+    }
+    
   public getFilterOptions() {
     const orgaoOptions = Array.from(new Set(this.processedData.map(item => item.department).filter(Boolean))).sort();
     const placaOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.plate).filter(Boolean))).sort();
