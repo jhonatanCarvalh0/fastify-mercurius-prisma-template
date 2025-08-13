@@ -1,4 +1,4 @@
-// types.ts
+// types.ts - Abastecimento
 export interface Abastecimento {
   Data: string;
   Hora: string;

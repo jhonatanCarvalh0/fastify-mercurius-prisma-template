@@ -1,4 +1,4 @@
-// mapToProcessed.ts
+// mapToProcessed.ts - Abastecimento
 import { AbastecimentoProcessed, ProcessedAbastecimentoRow } from './types';
 
 export function mapToProcessed(data: ProcessedAbastecimentoRow[]): AbastecimentoProcessed[] {

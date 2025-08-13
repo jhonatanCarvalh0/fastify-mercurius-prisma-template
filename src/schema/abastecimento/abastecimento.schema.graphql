@@ -45,6 +45,8 @@ type AbastecimentoColumn {
   accessor: String!
   isSortable: Boolean!
   dataType: String!
+  isFilterable: Boolean!
+  filterKey: String
 }
 
 type AbastecimentoKpis {

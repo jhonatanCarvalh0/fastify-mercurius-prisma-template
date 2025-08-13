@@ -221,18 +221,18 @@ const abastecimentoResolvers = () => ({
 
     abastecimentosColumns: () => {
       return [
-        { headerLabel: "Data", accessor: "datetime", isSortable: true, dataType: "date" },
-        { headerLabel: "Custo", accessor: "cost", isSortable: true, dataType: "currency" },
-        { headerLabel: "Litros", accessor: "fuelVolume", isSortable: true, dataType: "number" },
-        { headerLabel: "Tipo Combustível", accessor: "fuelType", isSortable: true, dataType: "string" },
-        { headerLabel: "Motorista", accessor: "driverName", isSortable: true, dataType: "string" },
-        { headerLabel: "Placa", accessor: "vehicle.plate", isSortable: true, dataType: "string" },
-        { headerLabel: "Modelo", accessor: "vehicle.model", isSortable: true, dataType: "string" },
-        { headerLabel: "Marca", accessor: "vehicle.brand", isSortable: true, dataType: "string" },
-        { headerLabel: "Posto", accessor: "gasStation.name", isSortable: true, dataType: "string" },
-        { headerLabel: "Cidade", accessor: "gasStation.city", isSortable: true, dataType: "string" },
-        { headerLabel: "Órgão/Departamento", accessor: "department", isSortable: true, dataType: "string" },
-        // { headerLabel: "Centro de Custo", accessor: "costCenter", isSortable: true, dataType: "string" }
+        { headerLabel: "Data", accessor: "datetime", isSortable: true, dataType: "date", isFilterable: true, filterKey: "datetime" },
+        { headerLabel: "Custo", accessor: "cost", isSortable: true, dataType: "currency", isFilterable: true, filterKey: "cost" },
+        { headerLabel: "Litros", accessor: "fuelVolume", isSortable: true, dataType: "number", isFilterable: true, filterKey: "fuelVolume" },
+        { headerLabel: "Tipo Combustível", accessor: "fuelType", isSortable: true, dataType: "string", isFilterable: true, filterKey: "fuelType" },
+        { headerLabel: "Motorista", accessor: "driverName", isSortable: true, dataType: "string", isFilterable: true, filterKey: "driverName" },
+        { headerLabel: "Placa", accessor: "vehicle.plate", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehiclePlate" },
+        { headerLabel: "Modelo", accessor: "vehicle.model", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehicleModel" },
+        { headerLabel: "Marca", accessor: "vehicle.brand", isSortable: true, dataType: "string", isFilterable: true, filterKey: "vehicleBrand" },
+        { headerLabel: "Posto", accessor: "gasStation.name", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStation.name" },
+        { headerLabel: "Cidade", accessor: "gasStation.city", isSortable: true, dataType: "string", isFilterable: true, filterKey: "gasStation.city" },
+        { headerLabel: "Órgão/Departamento", accessor: "department", isSortable: true, dataType: "string", isFilterable: true, filterKey: "department" },
+        // { headerLabel: "Centro de Custo", accessor: "costCenter", isSortable: true, dataType: "string", isFilterable: true, filterKey: "costCenter" },
       ];
     }
   }
