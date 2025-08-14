@@ -7,11 +7,15 @@ input DateRangeInput {
 
 input AbastecimentoFiltersInput {
   dateRange: DateRangeInput
+  dateTimeTable: String
+  cost: Float
+  fuelVolume: Float
   fuelType: [String!]
   vehiclePlate: String
   driverName: String
   department: [String!]     # ou String, se quiser só um valor
   vehicleModel: [String]
+  vehicleBrand: String
   gasStationCity: [String]
   gasStationName: [String]
 }

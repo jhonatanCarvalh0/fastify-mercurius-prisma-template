@@ -4,20 +4,6 @@ import { loadAbastecimento } from '../../data/loadAbastecimento';
 import { mapToProcessed } from './utils/mapToProcessed';
 import { AbastecimentoProcessor } from './abastecimentoProcessor';
 
-function parseDateTimeBR(dateTimeStr: string): Date | null {
-  if (!dateTimeStr) return null;
-  // data e hora separados por espaço
-  const [ datePart, timePart ] = dateTimeStr.split(' ');
-  if (!datePart) return null;
-  const [ day, month, year ] = datePart.split('/').map(Number);
-  if ([ day, month, year ].some(isNaN)) return null;
-
-  // hora pode ser undefined
-  const [ hour = 0, minute = 0, second = 0 ] = timePart ? timePart.split(':').map(Number) : [ 0, 0, 0 ];
-
-  return new Date(year, month - 1, day, hour, minute, second);
-}
-
 export class AbastecimentoService {
   private rawData: any[];
   private processedData: AbastecimentoProcessed[];
@@ -32,45 +18,63 @@ export class AbastecimentoService {
 
     if (!filters) return filtered;
 
+    // Helper: transforma string ou array em array sempre
+    const toArray = (v: string | string[] | undefined): string[] => {
+      if (!v) return [];
+      return Array.isArray(v) ? v : [ v ];
+    };
+
+    // Helper: normaliza string para comparação
+    const normalize = (s: string | undefined) => (s || '').toLowerCase().trim();
+
+    // Filtro por data
     if (filters.dateRange) {
       const from = new Date(filters.dateRange.from);
       const to = new Date(filters.dateRange.to);
 
       filtered = filtered.filter(item => {
         if (!item.datetime) return false;
-        const dt = parseDateTimeBR(item.datetime);
+        const dt = AbastecimentoProcessor.parseDateTimeBR(item.datetime);
         if (!dt) return false;
         return dt >= from && dt <= to;
       });
     }
 
+    // Filtros de texto (case-insensitive)
+    const textFilters: { key: string; values: string[] }[] = [
+      { key: 'department', values: toArray(filters.department).map(normalize) },
+      { key: 'dateTimeTable', values: toArray(filters.dateTimeTable).map(normalize) },
+      { key: 'fuelType', values: toArray(filters.fuelType).map(normalize) },
+      { key: 'driverName', values: toArray(filters.driverName).map(normalize) },
+      { key: 'vehiclePlate', values: toArray(filters.vehiclePlate).map(normalize) },
+      { key: 'vehicleModel', values: toArray(filters.vehicleModel).map(normalize) },
+      { key: 'vehicleBrand', values: toArray(filters.vehicleBrand).map(normalize) },
+      { key: 'gasStationCity', values: toArray(filters.gasStationCity).map(normalize) },
+      { key: 'gasStationName', values: toArray(filters.gasStationName).map(normalize) },
+    ];
+    
+    for (const { key, values } of textFilters) {
+      if (values.length > 0) {
+        filtered = filtered.filter(item => {
+          let fieldValue: string = '';
 
-    if (filters.department && filters.department.length > 0) {
-      filtered = filtered.filter(item => filters.department!.includes(item.department));
-    }
+          if (key.startsWith('vehicle')) {
+            const prop = key.replace('vehicle', '').toLowerCase(); // plate, model, brand, km
+            const vehicleField = (item.vehicle as any)?.[ prop ];
+            fieldValue = vehicleField != null ? String(vehicleField) : '';
+          } else if (key.startsWith('gasStation')) {
+            const prop = key.replace('gasStation', '').toLowerCase(); // name, city
+            const gasField = (item.gasStation as any)?.[ prop ];
+            fieldValue = gasField != null ? String(gasField) : '';
+          } else {
+            const val = item[ key as keyof AbastecimentoProcessed ];
+            fieldValue = val != null ? String(val) : '';
+          }
+          fieldValue = normalize(fieldValue); // agora sempre é string
 
-    if (filters.fuelType && filters.fuelType.length > 0) {
-      filtered = filtered.filter(item => filters.fuelType!.includes(item.fuelType));
-    }
-
-    if (filters.driverName) {
-      filtered = filtered.filter(item => item.driverName === filters.driverName);
-    }
-
-    if (filters.vehiclePlate && filters.vehiclePlate.length > 0) {
-      filtered = filtered.filter(item => filters.vehiclePlate!.includes(item.vehicle?.plate));
-    }
-
-    if (filters.vehicleModel && filters.vehicleModel.length > 0) {
-      filtered = filtered.filter(item => filters.vehicleModel!.includes(item.vehicle?.model));
-    }
-
-    if (filters.gasStationCity && filters.gasStationCity.length > 0) {
-      filtered = filtered.filter(item => filters.gasStationCity!.includes(item.gasStation?.city));
-    }
-
-    if (filters.gasStationName && filters.gasStationName.length > 0) {
-      filtered = filtered.filter(item => filters.gasStationName!.includes(item.gasStation?.name));
+          return values.some(term => fieldValue.includes(term));
+        });
+      }
     }
 
     return filtered;

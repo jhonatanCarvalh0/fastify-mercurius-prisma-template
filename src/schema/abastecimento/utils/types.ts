@@ -56,15 +56,17 @@ export interface AbastecimentoProcessed {
 
 export interface AbastecimentoFilters {
   dateRange: { from: string; to: string; };
+  dateTimeTable: string;
+  cost: number;
+  fuelVolume: number;
   fuelType: string;
-  vehiclePlate: string;
   driverName: string;
-  department:  string ; 
+  vehiclePlate: string;
   vehicleModel: [ string ];
-  gasStationCity: [ string ];
+  vehicleBrand: string;
   gasStationName: [ string ];
-  startDate?: string;
-  endDate?: string;
+  gasStationCity: [ string ];
+  department: string;
 }
 
 export interface ProcessedAbastecimentoRow {
