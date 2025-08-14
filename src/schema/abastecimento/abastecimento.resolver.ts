@@ -1,4 +1,5 @@
 import { AbastecimentoService } from './abastecimento.service';
+import { AbastecimentoProcessor } from './abastecimentoProcessor';
 import { AbastecimentoFilters } from './utils/types';
 
 const abastecimentoService = new AbastecimentoService();
@@ -12,16 +13,7 @@ const abastecimentoResolvers = () => ({
     ) => {
       let data = abastecimentoService.getAbastecimentos(filters);
 
-      // ordenação simples
-      if (sortBy) {
-        data = [ ...data ].sort((a, b) => {
-          const av = (a as Record<string, any>)[ sortBy ];
-          const bv = (b as Record<string, any>)[ sortBy ];
-          if (av < bv) return sortDirection === "DESC" ? 1 : -1;
-          if (av > bv) return sortDirection === "DESC" ? -1 : 1;
-          return 0;
-        });
-      }
+      data = AbastecimentoProcessor.sortData(data, sortBy, sortDirection?.toUpperCase());
 
       // paginação
       if (typeof offset === "number" && typeof limit === "number") {

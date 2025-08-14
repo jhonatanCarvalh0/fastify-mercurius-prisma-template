@@ -11,6 +11,34 @@ const numericFields = [
 ];
 
 export const AbastecimentoProcessor = {
+  // Função de ordenação genérica
+  sortData<T extends Record<string, any>>(data: T[], sortBy?: string, sortDirection: 'ASC' | 'DESC' = 'ASC'): T[] {
+    if (!sortBy) return data;
+
+    const direction = sortDirection.toUpperCase() === 'DESC' ? -1 : 1;
+
+    return [ ...data ].sort((a, b) => {
+      let av: any = a[ sortBy ];
+      let bv: any = b[ sortBy ];
+
+      // converte strings numéricas em números para ordenação correta
+      const aNum = av != null && !isNaN(Number(av)) ? Number(av) : av;
+      const bNum = bv != null && !isNaN(Number(bv)) ? Number(bv) : bv;
+
+      av = aNum;
+      bv = bNum;
+
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+
+      if (av < bv) return -1 * direction;
+      if (av > bv) return 1 * direction;
+      return 0;
+    });
+  },
+
+  // Recebe uma data no formato dd/mm/yyyy e retorna um objeto Date
   parseDate(dateInput?: string | null): Date | null {
     if (!dateInput) return null;
     const parts = dateInput.split('/');
@@ -23,6 +51,7 @@ export const AbastecimentoProcessor = {
     return isNaN(date.getTime()) ? null : date;
   },
 
+  // Converte valores numéricos, tratando vírgulas e espaços
   parseNumber(value?: string | number | null): number {
     if (value === null || value === undefined) return 0;
     if (typeof value === 'number' && !isNaN(value)) return value;
@@ -33,12 +62,14 @@ export const AbastecimentoProcessor = {
     return isNaN(num) ? 0 : num;
   },
 
+  // Extrai o ano de uma string ou número
   parseYear(value?: string | number | null): number | null {
     if (!value) return null;
     const year = Number(String(value).slice(0, 4));
     return Number.isInteger(year) ? year : null;
   },
 
+  // Processa uma linha individual
   processRow(row: Record<string, string | number>): ProcessedAbastecimentoRow {
     const processed: Record<string, any> = { ...row };
 
@@ -59,6 +90,7 @@ export const AbastecimentoProcessor = {
     return processed;
   },
 
+  // Processa os dados de abastecimento
   processAbastecimentoData(
     data: Record<string, string | number>[]
   ): ProcessedAbastecimentoRow[] {
