@@ -6,7 +6,7 @@ const abastecimentoService = new AbastecimentoService();
 
 const abastecimentoResolvers = () => ({
   Query: {
-    // lista com paginação
+    // lista com paginação, ordenação e filtros
     abastecimentos: (
       _: unknown,
       { limit, offset, sortBy, sortDirection, filters }: any
@@ -138,14 +138,11 @@ const abastecimentoResolvers = () => ({
       }, {});
       return Object.entries(totals).map(([ date, total ]) => ({ date, total }));
     },
-
-
-    // abastecimento.resolvers.ts
-
     costOverTime: async (_: unknown, { filters }: { filters?: any }) => {
       return abastecimentoService.getCostOverTimeGroupedByMonth(filters);
     },
 
+    // rankings
     rankingByDate: async (_: unknown, { filters }: { filters?: any }) => {
       const data = await abastecimentoService.getAbastecimentos(filters);
 

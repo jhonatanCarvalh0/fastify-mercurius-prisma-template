@@ -12,10 +12,14 @@ const numericFields = [
 
 export const AbastecimentoProcessor = {
   // Função de ordenação genérica
-  sortData<T extends Record<string, any>>(data: T[], sortBy?: string, sortDirection: 'ASC' | 'DESC' = 'ASC'): T[] {
+  sortData<T extends Record<string, any>>(
+    data: T[], 
+    sortBy?: string, 
+    sortDirection: 'ascending' | 'descending' = 'ascending'
+  ): T[] {
     if (!sortBy) return data;
 
-    const direction = sortDirection.toUpperCase() === 'DESC' ? -1 : 1;
+    const direction = sortDirection.toLowerCase() === 'descending' ? -1 : 1;
 
     return [ ...data ].sort((a, b) => {
       let av: any = a[ sortBy ];
