@@ -28,22 +28,38 @@ export class AbastecimentoService {
     const normalize = (s: string | undefined) => (s || '').toLowerCase().trim();
 
     // Filtro por data
-    if (filters.dateRange) {
-      const from = new Date(filters.dateRange.from);
-      const to = new Date(filters.dateRange.to);
-
+    if (filters.datetime) {
+      const search = normalize(String(filters.datetime));
       filtered = filtered.filter(item => {
-        if (!item.datetime) return false;
-        const dt = AbastecimentoProcessor.parseDateTimeBR(item.datetime);
-        if (!dt) return false;
-        return dt >= from && dt <= to;
+        const dt = item.datetime ? normalize(item.datetime) : '';
+        return dt.includes(search);
       });
     }
+
+    // --- Numeric Filters (busca parcial) ---
+    if (filters.cost) {
+      const searchCost = String(filters.cost).replace(',', '.').trim();
+      filtered = filtered.filter(item =>
+        item.cost != null &&
+        String(item.cost).includes(searchCost)
+      );
+    }
+
+    if (filters.fuelVolume) {
+      const searchFuel = String(filters.fuelVolume).replace(',', '.').trim();
+      filtered = filtered.filter(item =>
+        item.fuelVolume != null &&
+        String(item.fuelVolume).includes(searchFuel)
+      );
+    }
+
+
+
 
     // Filtros de texto (case-insensitive)
     const textFilters: { key: string; values: string[] }[] = [
       { key: 'department', values: toArray(filters.department).map(normalize) },
-      { key: 'dateTimeTable', values: toArray(filters.dateTimeTable).map(normalize) },
+      { key: 'datetime', values: toArray(filters.datetime).map(normalize) },
       { key: 'fuelType', values: toArray(filters.fuelType).map(normalize) },
       { key: 'driverName', values: toArray(filters.driverName).map(normalize) },
       { key: 'vehiclePlate', values: toArray(filters.vehiclePlate).map(normalize) },

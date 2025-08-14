@@ -56,9 +56,9 @@ export interface AbastecimentoProcessed {
 
 export interface AbastecimentoFilters {
   dateRange: { from: string; to: string; };
-  dateTimeTable: string;
-  cost: number;
-  fuelVolume: number;
+  datetime: string;
+  cost: string;
+  fuelVolume: string;
   fuelType: string;
   driverName: string;
   vehiclePlate: string;
