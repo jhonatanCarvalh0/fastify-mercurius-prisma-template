@@ -7,17 +7,27 @@ input DateRangeInput {
 
 input AbastecimentoFiltersInput {
   dateRange: DateRangeInput
+  fuelType: [String!]
+  vehiclePlate: String
+  driverName: String
+  department: [String!] # ou String, se quiser só um valor
+  vehicleModel: [String]
+  gasStationCity: [String]
+  gasStationName: [String]
+}
+
+input AbastecimentoTableFiltersInput {
   datetime: String
   cost: String
   fuelVolume: String
   fuelType: [String!]
-  vehiclePlate: String
   driverName: String
-  department: [String!]     # ou String, se quiser só um valor
-  vehicleModel: [String]
+  vehiclePlate: String
+  vehicleModel: String
   vehicleBrand: String
-  gasStationCity: [String]
   gasStationName: [String]
+  gasStationCity: [String]
+  department: [String!] # ou String, se quiser só um valor
 }
 
 type Vehicle {
@@ -55,9 +65,9 @@ type AbastecimentoColumn {
 
 type AbastecimentoKpis {
   totalCost: Float!
-  fuelConsumed: Float!  
-  kilometersDriven: Float! 
-  vehiclesCount: Int! 
+  fuelConsumed: Float!
+  kilometersDriven: Float!
+  vehiclesCount: Int!
   dailyAverageCost: Float!
   suppliesCount: Int!
   lastUpdate: DateTime!
@@ -120,12 +130,13 @@ type RankingByDepartment {
 }
 
 type Query {
-  abastecimentos(
+  getAbastecimentos(filters: AbastecimentoFiltersInput): [Abastecimento!]!
+  getAbastecimentosTable(
     limit: Int
     offset: Int
     sortBy: String
     sortDirection: String
-    filters: AbastecimentoFiltersInput
+    filters: AbastecimentoTableFiltersInput
   ): [Abastecimento!]!
 
   abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
@@ -147,7 +158,9 @@ type Query {
 
   rankingByDate(filters: AbastecimentoFiltersInput): [RankingByDate!]!
   rankingByPlate(filters: AbastecimentoFiltersInput): [RankingByPlate!]!
-  rankingByDepartment(filters: AbastecimentoFiltersInput): [RankingByDepartment!]!
+  rankingByDepartment(
+    filters: AbastecimentoFiltersInput
+  ): [RankingByDepartment!]!
 
   abastecimentosColumns: [AbastecimentoColumn!]!
 }

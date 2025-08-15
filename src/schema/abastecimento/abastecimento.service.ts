@@ -18,6 +18,26 @@ export class AbastecimentoService {
 
     if (!filters) return filtered;
 
+    // Filtro por data --- NAO REMOVER ---
+    if (filters.dateRange) {
+      const from = new Date(filters.dateRange.from);
+      const to = new Date(filters.dateRange.to);
+
+      filtered = filtered.filter(item => {
+        if (!item.datetime) return false;
+        const dt = AbastecimentoProcessor.parseDate(item.datetime);
+        if (!dt) return false;
+        return dt >= from && dt <= to;
+      });
+    }
+
+    return filtered;
+  }
+
+  public getAbastecimentosTable( filters?: AbastecimentoFilters): AbastecimentoProcessed[] {
+    let filtered = this.processedData;
+    if (!filters) return filtered;
+
     // Helper: transforma string ou array em array sempre
     const toArray = (v: string | string[] | undefined): string[] => {
       if (!v) return [];
@@ -27,7 +47,6 @@ export class AbastecimentoService {
     // Helper: normaliza string para comparação
     const normalize = (s: string | undefined) => (s || '').toLowerCase().trim();
 
-    // Filtro por data
     if (filters.datetime) {
       const search = normalize(String(filters.datetime));
       filtered = filtered.filter(item => {
@@ -53,9 +72,6 @@ export class AbastecimentoService {
       );
     }
 
-
-
-
     // Filtros de texto (case-insensitive)
     const textFilters: { key: string; values: string[] }[] = [
       { key: 'department', values: toArray(filters.department).map(normalize) },
@@ -68,7 +84,7 @@ export class AbastecimentoService {
       { key: 'gasStationCity', values: toArray(filters.gasStationCity).map(normalize) },
       { key: 'gasStationName', values: toArray(filters.gasStationName).map(normalize) },
     ];
-    
+
     for (const { key, values } of textFilters) {
       if (values.length > 0) {
         filtered = filtered.filter(item => {
@@ -212,8 +228,8 @@ export class AbastecimentoService {
     return Object.entries(totals)
       .sort(([ a ], [ b ]) => a.localeCompare(b))
       .map(([ date, total ]) => ({ date, total }));
-    }
-    
+  }
+
   public getFilterOptions() {
     const orgaoOptions = Array.from(new Set(this.processedData.map(item => item.department).filter(Boolean))).sort();
     const placaOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.plate).filter(Boolean))).sort();

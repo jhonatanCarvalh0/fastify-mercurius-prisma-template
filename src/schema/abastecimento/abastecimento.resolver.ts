@@ -7,19 +7,23 @@ const abastecimentoService = new AbastecimentoService();
 const abastecimentoResolvers = () => ({
   Query: {
     // lista com paginação, ordenação e filtros
-    abastecimentos: (
+    getAbastecimentos: (
+      _: unknown, { filters }: any
+    ) => {
+      return abastecimentoService.getAbastecimentos(filters);;
+    },
+
+    getAbastecimentosTable:(
       _: unknown,
       { limit, offset, sortBy, sortDirection, filters }: any
     ) => {
-      let data = abastecimentoService.getAbastecimentos(filters);
-
+      let data = abastecimentoService.getAbastecimentosTable(filters);
       data = AbastecimentoProcessor.sortData(data, sortBy, sortDirection?.toUpperCase());
 
       // paginação
       if (typeof offset === "number" && typeof limit === "number") {
         data = data.slice(offset, offset + limit);
       }
-
       return data;
     },
 

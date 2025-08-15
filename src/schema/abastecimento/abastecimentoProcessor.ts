@@ -13,8 +13,8 @@ const numericFields = [
 export const AbastecimentoProcessor = {
   // Função de ordenação genérica
   sortData<T extends Record<string, any>>(
-    data: T[], 
-    sortBy?: string, 
+    data: T[],
+    sortBy?: string,
     sortDirection: 'ascending' | 'descending' = 'ascending'
   ): T[] {
     if (!sortBy) return data;
@@ -40,30 +40,6 @@ export const AbastecimentoProcessor = {
       if (av > bv) return 1 * direction;
       return 0;
     });
-  },
-
-  // Normaliza strings para comparação (case-insensitive, sem acentos)
-  normalizeString(str ?: string | null): string {
-    if (!str) return '';
-      return str
-        .toLowerCase() // tudo minúsculo
-        .normalize('NFD') // separa acentos
-        .replace(/[\u0300-\u036f]/g, ''); // remove acentos
-  },
-
-  // Converte uma string no formato dd/mm/yyyy hh:mm:ss para um objeto Date
-  parseDateTimeBR(dateTimeStr: string): Date | null {
-    if (!dateTimeStr) return null;
-    // data e hora separados por espaço
-    const [ datePart, timePart ] = dateTimeStr.split(' ');
-    if (!datePart) return null;
-    const [ day, month, year ] = datePart.split('/').map(Number);
-    if ([ day, month, year ].some(isNaN)) return null;
-  
-    // hora pode ser undefined
-    const [ hour = 0, minute = 0, second = 0 ] = timePart ? timePart.split(':').map(Number) : [ 0, 0, 0 ];
-  
-    return new Date(year, month - 1, day, hour, minute, second);
   },
 
   // Recebe uma data no formato dd/mm/yyyy e retorna um objeto Date
