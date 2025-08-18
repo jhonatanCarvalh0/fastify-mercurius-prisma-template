@@ -139,7 +139,7 @@ type Query {
     filters: AbastecimentoTableFiltersInput
   ): [Abastecimento!]!
 
-  abastecimentosCount(filters: AbastecimentoFiltersInput): Int!
+  abastecimentosCount(filters: AbastecimentoTableFiltersInput): Int!
   abastecimentoKpis(filters: AbastecimentoFiltersInput): AbastecimentoKpis!
 
   departmentOptions: [FilterOption]

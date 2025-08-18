@@ -1,5 +1,5 @@
 // AbastecimentoService.ts
-import { AbastecimentoProcessed, AbastecimentoFilters } from './utils/types';
+import { AbastecimentoProcessed, AbastecimentoFilters, AbastecimentoTableFilters } from './utils/types';
 import { loadAbastecimento } from '../../data/loadAbastecimento';
 import { mapToProcessed } from './utils/mapToProcessed';
 import { AbastecimentoProcessor } from './abastecimentoProcessor';
@@ -34,9 +34,9 @@ export class AbastecimentoService {
     return filtered;
   }
 
-  public getAbastecimentosTable( filters?: AbastecimentoFilters): AbastecimentoProcessed[] {
-    let filtered = this.processedData;
-    if (!filters) return filtered;
+  public getAbastecimentosTable( filters?: AbastecimentoFilters, tableFilters?: AbastecimentoTableFilters): AbastecimentoProcessed[] {
+    let filtered = this.getAbastecimentos(filters);
+    if (!tableFilters) return filtered;
 
     // Helper: transforma string ou array em array sempre
     const toArray = (v: string | string[] | undefined): string[] => {
@@ -47,8 +47,8 @@ export class AbastecimentoService {
     // Helper: normaliza string para comparação
     const normalize = (s: string | undefined) => (s || '').toLowerCase().trim();
 
-    if (filters.datetime) {
-      const search = normalize(String(filters.datetime));
+    if (tableFilters.datetime) {
+      const search = normalize(String(tableFilters.datetime));
       filtered = filtered.filter(item => {
         const dt = item.datetime ? normalize(item.datetime) : '';
         return dt.includes(search);
@@ -56,16 +56,16 @@ export class AbastecimentoService {
     }
 
     // --- Numeric Filters (busca parcial) ---
-    if (filters.cost) {
-      const searchCost = String(filters.cost).replace(',', '.').trim();
+    if (tableFilters.cost) {
+      const searchCost = String(tableFilters.cost).replace(',', '.').trim();
       filtered = filtered.filter(item =>
         item.cost != null &&
         String(item.cost).includes(searchCost)
       );
     }
 
-    if (filters.fuelVolume) {
-      const searchFuel = String(filters.fuelVolume).replace(',', '.').trim();
+    if (tableFilters.fuelVolume) {
+      const searchFuel = String(tableFilters.fuelVolume).replace(',', '.').trim();
       filtered = filtered.filter(item =>
         item.fuelVolume != null &&
         String(item.fuelVolume).includes(searchFuel)
@@ -74,15 +74,15 @@ export class AbastecimentoService {
 
     // Filtros de texto (case-insensitive)
     const textFilters: { key: string; values: string[] }[] = [
-      { key: 'department', values: toArray(filters.department).map(normalize) },
-      { key: 'datetime', values: toArray(filters.datetime).map(normalize) },
-      { key: 'fuelType', values: toArray(filters.fuelType).map(normalize) },
-      { key: 'driverName', values: toArray(filters.driverName).map(normalize) },
-      { key: 'vehiclePlate', values: toArray(filters.vehiclePlate).map(normalize) },
-      { key: 'vehicleModel', values: toArray(filters.vehicleModel).map(normalize) },
-      { key: 'vehicleBrand', values: toArray(filters.vehicleBrand).map(normalize) },
-      { key: 'gasStationCity', values: toArray(filters.gasStationCity).map(normalize) },
-      { key: 'gasStationName', values: toArray(filters.gasStationName).map(normalize) },
+      { key: 'department', values: toArray(tableFilters.department).map(normalize) },
+      { key: 'datetime', values: toArray(tableFilters.datetime).map(normalize) },
+      { key: 'fuelType', values: toArray(tableFilters.fuelType).map(normalize) },
+      { key: 'driverName', values: toArray(tableFilters.driverName).map(normalize) },
+      { key: 'vehiclePlate', values: toArray(tableFilters.vehiclePlate).map(normalize) },
+      { key: 'vehicleModel', values: toArray(tableFilters.vehicleModel).map(normalize) },
+      { key: 'vehicleBrand', values: toArray(tableFilters.vehicleBrand).map(normalize) },
+      { key: 'gasStationCity', values: toArray(tableFilters.gasStationCity).map(normalize) },
+      { key: 'gasStationName', values: toArray(tableFilters.gasStationName).map(normalize) },
     ];
 
     for (const { key, values } of textFilters) {
@@ -149,7 +149,6 @@ export class AbastecimentoService {
       kilometersDriven: totalKilometers,
     };
   }
-
 
   public getGastoPorOrgao(filters?: AbastecimentoFilters) {
     const data = this.getAbastecimentos(filters);

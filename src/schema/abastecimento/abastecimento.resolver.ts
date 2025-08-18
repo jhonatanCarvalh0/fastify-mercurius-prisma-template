@@ -1,37 +1,42 @@
 import { AbastecimentoService } from './abastecimento.service';
 import { AbastecimentoProcessor } from './abastecimentoProcessor';
-import { AbastecimentoFilters } from './utils/types';
+import { AbastecimentoFilters, AbastecimentoTableFilters } from './utils/types';
 
 const abastecimentoService = new AbastecimentoService();
 
 const abastecimentoResolvers = () => ({
   Query: {
-    // lista com paginação, ordenação e filtros
-    getAbastecimentos: (
-      _: unknown, { filters }: any
-    ) => {
-      return abastecimentoService.getAbastecimentos(filters);;
-    },
+      // Dados gerais (filtros gerais, incluindo dateRange)
+      getAbastecimentos: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
+        return abastecimentoService.getAbastecimentos(filters);
+      },
 
-    getAbastecimentosTable:(
-      _: unknown,
-      { limit, offset, sortBy, sortDirection, filters }: any
-    ) => {
-      let data = abastecimentoService.getAbastecimentosTable(filters);
-      data = AbastecimentoProcessor.sortData(data, sortBy, sortDirection?.toUpperCase());
+      // Dados da tabela (aplica filtros da tabela + ordenação + paginação)
+      getAbastecimentosTable: (
+        _: unknown,
+        { limit, offset, sortBy, sortDirection, filters }: {
+          limit?: number;
+          offset?: number;
+          sortBy?: string;
+          sortDirection?: 'ascending' | 'descending';
+          filters?: AbastecimentoTableFilters;
+        }
+      ) => {
+        let data = abastecimentoService.getAbastecimentosTable(undefined, filters); // nenhum filtro geral
+        data = AbastecimentoProcessor.sortData(data, sortBy, sortDirection);
 
-      // paginação
-      if (typeof offset === "number" && typeof limit === "number") {
-        data = data.slice(offset, offset + limit);
-      }
-      return data;
-    },
+        // paginação
+        if (typeof offset === "number" && typeof limit === "number") {
+          data = data.slice(offset, offset + limit);
+        }
+        return data;
+      },
 
-    // total de registros
-    abastecimentosCount: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
-      const filtered = abastecimentoService.getAbastecimentos(filters);
-      return filtered.length;
-    },
+      // Conta registros da tabela (aplica apenas filtros da tabela)
+      abastecimentosCount: (_: unknown, { filters }: { filters?: AbastecimentoTableFilters }) => {
+        const filtered = abastecimentoService.getAbastecimentosTable(undefined, filters);
+        return filtered.length;
+      },
 
     // KPIs
     abastecimentoKpis: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
