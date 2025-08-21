@@ -7,27 +7,27 @@ input DateRangeInput {
 
 input AbastecimentoFiltersInput {
   dateRange: DateRangeInput
-  fuelType: [String!]
+  fuelType: String
   vehiclePlate: String
   driverName: String
-  department: [String!] # ou String, se quiser só um valor
-  vehicleModel: [String]
-  gasStationCity: [String]
-  gasStationName: [String]
+  department: String # ou String, se quiser só um valor
+  vehicleModel: String
+  gasStationCity: String
+  gasStationName: String
 }
 
 input AbastecimentoTableFiltersInput {
   datetime: String
   cost: String
   fuelVolume: String
-  fuelType: [String!]
+  fuelType: [String]
   driverName: String
   vehiclePlate: String
   vehicleModel: String
   vehicleBrand: String
   gasStationName: [String]
   gasStationCity: [String]
-  department: [String!] # ou String, se quiser só um valor
+  department: [String] # ou String, se quiser só um valor
 }
 
 type Vehicle {
@@ -136,10 +136,14 @@ type Query {
     offset: Int
     sortBy: String
     sortDirection: String
-    filters: AbastecimentoTableFiltersInput
+    filters: AbastecimentoFiltersInput 
+    tableFilters: AbastecimentoTableFiltersInput
   ): [Abastecimento!]!
 
-  abastecimentosCount(filters: AbastecimentoTableFiltersInput): Int!
+  abastecimentosCount(
+    filters: AbastecimentoFiltersInput
+    tableFilters: AbastecimentoTableFiltersInput
+    ): Int!
   abastecimentoKpis(filters: AbastecimentoFiltersInput): AbastecimentoKpis!
 
   departmentOptions: [FilterOption]

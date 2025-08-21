@@ -57,9 +57,9 @@ export interface AbastecimentoProcessed {
 export interface AbastecimentoFilters {
   dateRange: { from: string; to: string; };
   vehiclePlate: string;
-  vehicleModel: [ string ];
-  gasStationName: [ string ];
-  gasStationCity: [ string ];
+  vehicleModel:  string;
+  gasStationName: string;
+  gasStationCity: string;
   department: string;
 }
 
@@ -70,10 +70,10 @@ export interface AbastecimentoTableFilters {
   fuelType: string;
   driverName: string;
   vehiclePlate: string;
-  vehicleModel: [ string ];
+  vehicleModel: string ;
   vehicleBrand: string;
-  gasStationName: [ string ];
-  gasStationCity: [ string ];
+  gasStationName: string ;
+  gasStationCity: string ;
   department: string;
 }
 

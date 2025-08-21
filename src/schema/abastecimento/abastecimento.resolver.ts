@@ -6,37 +6,30 @@ const abastecimentoService = new AbastecimentoService();
 
 const abastecimentoResolvers = () => ({
   Query: {
-      // Dados gerais (filtros gerais, incluindo dateRange)
-      getAbastecimentos: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
-        return abastecimentoService.getAbastecimentos(filters);
-      },
+    // Dados gerais (filtros gerais, incluindo dateRange)
+    getAbastecimentos: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
+      return abastecimentoService.getAbastecimentos(filters);
+    },
 
       // Dados da tabela (aplica filtros da tabela + ordenação + paginação)
-      getAbastecimentosTable: (
-        _: unknown,
-        { limit, offset, sortBy, sortDirection, filters }: {
-          limit?: number;
-          offset?: number;
-          sortBy?: string;
-          sortDirection?: 'ascending' | 'descending';
-          filters?: AbastecimentoTableFilters;
-        }
-      ) => {
-        let data = abastecimentoService.getAbastecimentosTable(undefined, filters); // nenhum filtro geral
-        data = AbastecimentoProcessor.sortData(data, sortBy, sortDirection);
+    getAbastecimentosTable: (
+      _: unknown,
+      { limit, offset, sortBy, sortDirection, filters, tableFilters }: any
+    ) => {
+      let data = abastecimentoService.getAbastecimentosTable(filters, tableFilters);
+      data = AbastecimentoProcessor.sortData(data, sortBy, (sortDirection || 'ascending'));
 
-        // paginação
-        if (typeof offset === "number" && typeof limit === "number") {
-          data = data.slice(offset, offset + limit);
-        }
-        return data;
-      },
+      if (typeof offset === 'number' && typeof limit === 'number') {
+        data = data.slice(offset, offset + limit);
+      }
+      return data;
+    },
 
-      // Conta registros da tabela (aplica apenas filtros da tabela)
-      abastecimentosCount: (_: unknown, { filters }: { filters?: AbastecimentoTableFilters }) => {
-        const filtered = abastecimentoService.getAbastecimentosTable(undefined, filters);
-        return filtered.length;
-      },
+    // ✅ count baseado no mesmo conjunto filtrado da tabela
+    abastecimentosCount: (_: unknown, { filters, tableFilters }: any) => {
+      const data = abastecimentoService.getAbastecimentosTable(filters, tableFilters);
+      return data.length;
+    },
 
     // KPIs
     abastecimentoKpis: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
@@ -147,6 +140,7 @@ const abastecimentoResolvers = () => ({
       }, {});
       return Object.entries(totals).map(([ date, total ]) => ({ date, total }));
     },
+    
     costOverTime: async (_: unknown, { filters }: { filters?: any }) => {
       return abastecimentoService.getCostOverTimeGroupedByMonth(filters);
     },
@@ -155,25 +149,31 @@ const abastecimentoResolvers = () => ({
     rankingByDate: async (_: unknown, { filters }: { filters?: any }) => {
       const data = await abastecimentoService.getAbastecimentos(filters);
 
-      // agrupa custo por data
-      const totals = data.reduce<Record<string, number>>((acc, item) => {
-        let dateStr = "N/A";
-        if (item.datetime) {
+      // Se houver dateRange, filtra os dados antes de agrupar
+      let filteredData = data;
+      if (filters?.dateRange?.from && filters?.dateRange?.to) {
+        const from = new Date(filters.dateRange.from);
+        const to = new Date(filters.dateRange.to);
+
+        filteredData = data.filter(item => {
+          if (!item.datetime) return false;
           const dateObj = new Date(item.datetime);
-          if (!isNaN(dateObj.getTime())) {
-            dateStr = dateObj.toISOString().substring(0, 10);
-          }
-        }
+          return !isNaN(dateObj.getTime()) && dateObj >= from && dateObj <= to;
+        });
+      }
+
+      // Agrupa custo por data
+      const totals = filteredData.reduce<Record<string, number>>((acc, item) => {
+        const dateObj = new Date(item.datetime);
+        const dateStr = dateObj.toISOString().substring(0, 10);
         acc[ dateStr ] = (acc[ dateStr ] || 0) + (item.cost || 0);
         return acc;
       }, {});
 
-      // filtra e ordena em ordem crescente pela data ISO (yyyy-mm-dd)
-      const ordered = Object.entries(totals)
-        .filter(([ date ]) => date !== "N/A")
-        .sort(([ a ], [ b ]) => a.localeCompare(b));
-
-      return ordered.map(([ date, total ]) => ({ date, total }));
+      // Transforma em array e ordena do maior para o menor total
+      return Object.entries(totals)
+        .map(([ date, total ]) => ({ date, total }))
+        .sort((a, b) => b.total - a.total); // ordem decrescente pelo total
     },
 
     rankingByPlate: async (_: unknown, { filters }: { filters?: any }) => {
