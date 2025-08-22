@@ -74,6 +74,13 @@ type AbastecimentoKpis {
   lastUpdate: DateTime!
 }
 
+type vehicleSummary {
+  vehicle: Vehicle
+  department: String
+  totalCost: Float
+  supplyCount: Int
+}
+
 type FilterOption {
   value: String
   label: String
@@ -146,6 +153,7 @@ type Query {
     tableFilters: AbastecimentoTableFiltersInput
     ): Int!
   abastecimentoKpis(filters: AbastecimentoFiltersInput): AbastecimentoKpis!
+  vehicleSummary: [vehicleSummary]
 
   departmentOptions: [FilterOption]
   vehiclePlateOptions: [FilterOption]

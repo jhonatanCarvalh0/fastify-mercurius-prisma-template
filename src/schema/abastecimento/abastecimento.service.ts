@@ -59,7 +59,6 @@ export class AbastecimentoService {
     return filtered;
   }
 
-
   public getAbastecimentosTable( filters?: AbastecimentoFilters, tableFilters?: AbastecimentoTableFilters): AbastecimentoProcessed[] {
     let filtered = this.getAbastecimentos(filters);
     if (!tableFilters) return filtered;
@@ -174,6 +173,37 @@ export class AbastecimentoService {
       vehiclesCount: uniqueVehicles.size,
       kilometersDriven: totalKilometers,
     };
+  }
+
+  public getVehicleSummary() {
+    const data = this.processedData;
+
+    // Agrupar por veículo + departamento
+    const summaryMap: Record<string, { vehicle: any; department: string; totalCost: number; supplyCount: number }> = {};
+
+    data.forEach(item => {
+      if (!item.vehicle?.plate) return;
+
+      const key = `${item.vehicle.plate}-${item.department}`;
+      if (!summaryMap[ key ]) {
+        summaryMap[ key ] = {
+          vehicle: {
+            plate: item.vehicle.plate,
+            model: item.vehicle.model,
+            brand: item.vehicle.brand
+          },
+          department: item.department,
+          totalCost: 0,
+          supplyCount: 0,
+        };
+      }
+
+      summaryMap[ key ].totalCost += item.cost || 0;
+      summaryMap[ key ].supplyCount += 1;
+    });
+
+    return Object.values(summaryMap);
+  
   }
 
   public getGastoPorOrgao(filters?: AbastecimentoFilters) {

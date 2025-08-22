@@ -52,6 +52,10 @@ const abastecimentoResolvers = () => ({
       };
     },
 
+    vehicleSummary: () => {
+      return abastecimentoService.getVehicleSummary();
+    },
+
     // opções de filtro
     vehiclePlateOptions: () => {
       const placas = abastecimentoService.getFilterOptions().placa;
