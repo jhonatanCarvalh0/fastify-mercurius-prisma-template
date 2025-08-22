@@ -31,8 +31,34 @@ export class AbastecimentoService {
       });
     }
 
+    // Filtro por departamento
+    if (filters.department && filters.department !== '') {
+      filtered = filtered.filter(item => item.department === filters.department);
+    }
+
+    // Filtro por placa
+    if (filters.vehiclePlate && filters.vehiclePlate !== '') {
+      filtered = filtered.filter(item => item.vehicle?.plate === filters.vehiclePlate);
+    }
+
+    // Filtro por modelo
+    if (filters.vehicleModel && filters.vehicleModel !== '') {
+      filtered = filtered.filter(item => item.vehicle?.model === filters.vehicleModel);
+    }
+
+    // Filtro por cidade do posto
+    if (filters.gasStationCity && filters.gasStationCity !== '') {
+      filtered = filtered.filter(item => item.gasStation?.city === filters.gasStationCity);
+    }
+
+    // Filtro por nome do posto
+    if (filters.gasStationName && filters.gasStationName !== '') {
+      filtered = filtered.filter(item => item.gasStation?.name === filters.gasStationName);
+    }
+
     return filtered;
   }
+
 
   public getAbastecimentosTable( filters?: AbastecimentoFilters, tableFilters?: AbastecimentoTableFilters): AbastecimentoProcessed[] {
     let filtered = this.getAbastecimentos(filters);

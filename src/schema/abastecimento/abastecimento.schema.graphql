@@ -9,6 +9,7 @@ input AbastecimentoFiltersInput {
   dateRange: DateRangeInput
   fuelType: String
   vehiclePlate: String
+  vehicleBrand: String
   driverName: String
   department: String # ou String, se quiser só um valor
   vehicleModel: String
