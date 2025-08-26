@@ -285,12 +285,36 @@ export class AbastecimentoService {
       .map(([ date, total ]) => ({ date, total }));
   }
 
-  public getFilterOptions() {
-    const orgaoOptions = Array.from(new Set(this.processedData.map(item => item.department).filter(Boolean))).sort();
-    const placaOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.plate).filter(Boolean))).sort();
-    const modelOptions = Array.from(new Set(this.processedData.map(item => item.vehicle.model).filter(Boolean))).sort();
-    const gasStationCityOptions = Array.from(new Set(this.processedData.map(item => item.gasStation.city).filter(Boolean))).sort();
-    const gasStationNameOptions = Array.from(new Set(this.processedData.map(item => item.gasStation.name).filter(Boolean))).sort();
+  public getFilterOptions(filters: any) {
+    // 1. Filtra os dados com base no que já foi selecionado
+    let filtered = this.processedData;
+
+    if (filters.department) {
+      filtered = filtered.filter(item => item.department === filters.department);
+    }
+
+    if (filters.vehiclePlate) {
+      filtered = filtered.filter(item => item.vehicle.plate === filters.vehiclePlate);
+    }
+
+    if (filters.vehicleModel) {
+      filtered = filtered.filter(item => item.vehicle.model === filters.vehicleModel);
+    }
+
+    if (filters.gasStationCity) {
+      filtered = filtered.filter(item => item.gasStation.city === filters.gasStationCity);
+    }
+
+    if (filters.gasStationName) {
+      filtered = filtered.filter(item => item.gasStation.name === filters.gasStationName);
+    }
+
+    // 2. Extrai os valores possíveis desse conjunto filtrado
+    const orgaoOptions = Array.from(new Set(filtered.map(item => item.department).filter(Boolean))).sort();
+    const placaOptions = Array.from(new Set(filtered.map(item => item.vehicle.plate).filter(Boolean))).sort();
+    const modelOptions = Array.from(new Set(filtered.map(item => item.vehicle.model).filter(Boolean))).sort();
+    const gasStationCityOptions = Array.from(new Set(filtered.map(item => item.gasStation.city).filter(Boolean))).sort();
+    const gasStationNameOptions = Array.from(new Set(filtered.map(item => item.gasStation.name).filter(Boolean))).sort();
 
     return {
       orgao: orgaoOptions,

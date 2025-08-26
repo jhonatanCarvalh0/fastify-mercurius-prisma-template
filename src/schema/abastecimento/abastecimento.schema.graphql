@@ -17,6 +17,15 @@ input AbastecimentoFiltersInput {
   gasStationName: String
 }
 
+input AbastecimentoFiltersOptionsInput {
+  fuelType: String
+  vehiclePlate: String
+  department: String # ou String, se quiser só um valor
+  vehicleModel: String
+  gasStationCity: String
+  gasStationName: String
+}
+
 input AbastecimentoTableFiltersInput {
   datetime: String
   cost: String
@@ -155,11 +164,11 @@ type Query {
   abastecimentoKpis(filters: AbastecimentoFiltersInput): AbastecimentoKpis!
   vehicleSummary: [vehicleSummary]
 
-  departmentOptions: [FilterOption]
-  vehiclePlateOptions: [FilterOption]
-  vehicleModelOptions: [FilterOption]
-  gasStationCityOptions: [FilterOption]
-  gasStationNameOptions: [FilterOption]
+  departmentOptions(filters: AbastecimentoFiltersOptionsInput): [FilterOption]
+  vehiclePlateOptions(filters: AbastecimentoFiltersOptionsInput): [FilterOption]
+  vehicleModelOptions(filters: AbastecimentoFiltersOptionsInput): [FilterOption]
+  gasStationCityOptions(filters: AbastecimentoFiltersOptionsInput): [FilterOption]
+  gasStationNameOptions(filters: AbastecimentoFiltersOptionsInput): [FilterOption]
 
   costByVehicle(filters: AbastecimentoFiltersInput): [CostByVehicle!]!
   costByDepartment(filters: AbastecimentoFiltersInput): [CostByDepartment!]!

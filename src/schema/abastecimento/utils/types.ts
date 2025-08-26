@@ -62,6 +62,14 @@ export interface AbastecimentoFilters {
   gasStationCity: string;
   department: string;
 }
+export interface AbastecimentoOptionsFilters {
+  dateRange: { from: string; to: string; };
+  vehiclePlate: string;
+  vehicleModel:  string;
+  gasStationName: string;
+  gasStationCity: string;
+  department: string;
+}
 
 export interface AbastecimentoTableFilters {
   datetime: string;

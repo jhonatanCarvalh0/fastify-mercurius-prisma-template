@@ -1,6 +1,6 @@
 import { AbastecimentoService } from './abastecimento.service';
 import { AbastecimentoProcessor } from './abastecimentoProcessor';
-import { AbastecimentoFilters, AbastecimentoTableFilters } from './utils/types';
+import { AbastecimentoFilters, AbastecimentoOptionsFilters } from './utils/types';
 
 const abastecimentoService = new AbastecimentoService();
 
@@ -57,26 +57,31 @@ const abastecimentoResolvers = () => ({
     },
 
     // opções de filtro
-    vehiclePlateOptions: () => {
-      const placas = abastecimentoService.getFilterOptions().placa;
-      return placas.map(p => ({ value: p, label: p }));
+    vehiclePlateOptions: (_: unknown, args: { filters: AbastecimentoOptionsFilters }) => {
+      const placas = abastecimentoService.getFilterOptions(args.filters).placa;
+      return placas.sort().map((p) => ({ value: p, label: p }));
     },
-    departmentOptions: () => {
-      const departments = abastecimentoService.getFilterOptions().orgao;
-      return departments.map(d => ({ value: d, label: d }));
+
+    departmentOptions: (_: unknown, args: { filters: AbastecimentoOptionsFilters }) => {
+      const departments = abastecimentoService.getFilterOptions(args.filters).orgao;
+      return departments.sort().map((d) => ({ value: d, label: d }));
     },
-    vehicleModelOptions: () => {
-      const models = abastecimentoService.getFilterOptions().modelo;
-      return models.map(m => ({ value: m, label: m }));
+
+    vehicleModelOptions: (_: unknown, args: { filters: AbastecimentoOptionsFilters }) => {
+      const models = abastecimentoService.getFilterOptions(args.filters).modelo;
+      return models.sort().map((m) => ({ value: m, label: m }));
     },
-    gasStationCityOptions: () => {
-      const cities = abastecimentoService.getFilterOptions().cidadePosto;
-      return cities.map(c => ({ value: c, label: c }));
+
+    gasStationCityOptions: (_: unknown, args: { filters: AbastecimentoOptionsFilters }) => {
+      const cities = abastecimentoService.getFilterOptions(args.filters).cidadePosto;
+      return cities.sort().map((c) => ({ value: c, label: c }));
     },
-    gasStationNameOptions: () => {
-      const names = abastecimentoService.getFilterOptions().nomePosto;
-      return names.map(n => ({ value: n, label: n }));
+
+    gasStationNameOptions: (_: unknown, args: { filters: AbastecimentoOptionsFilters }) => {
+      const names = abastecimentoService.getFilterOptions(args.filters).nomePosto;
+      return names.sort().map(n => ({ value: n, label: n }));
     },
+
 
     // gráficos
     costByVehicle: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
