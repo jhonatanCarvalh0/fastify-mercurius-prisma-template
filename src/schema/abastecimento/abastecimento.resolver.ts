@@ -82,7 +82,6 @@ const abastecimentoResolvers = () => ({
       return names.sort().map(n => ({ value: n, label: n }));
     },
 
-
     // gráficos
     costByVehicle: (_: unknown, { filters }: { filters?: AbastecimentoFilters }) => {
       const data = abastecimentoService.getAbastecimentos(filters);
@@ -183,6 +182,11 @@ const abastecimentoResolvers = () => ({
       return Object.entries(totals)
         .map(([ date, total ]) => ({ date, total }))
         .sort((a, b) => b.total - a.total); // ordem decrescente pelo total
+
+      // // Converte para array e ordena por data
+      // return Object.entries(totals)
+      //   .map(([ date, total ]) => ({ date, total }))
+      //   .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     },
 
     rankingByPlate: async (_: unknown, { filters }: { filters?: any }) => {
