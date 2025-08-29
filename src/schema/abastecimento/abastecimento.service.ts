@@ -79,7 +79,7 @@ export class AbastecimentoService {
         return dt.includes(search);
       });
     }
-
+  
     // --- Numeric Filters (busca parcial) ---
     if (tableFilters.cost) {
       const searchCost = String(tableFilters.cost).replace(',', '.').trim();

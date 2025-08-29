@@ -6,7 +6,7 @@ input DateRangeInput {
 }
 
 input ManutencaoFiltersInput {
-  dataRange: DateRangeInput
+  dateRange: DateRangeInput
   department: String
   plate: String
   categoryOs: String
@@ -23,7 +23,7 @@ input ManutencaoFilterTableInput {
 
 type Manutencao {
   id: ID!
-  os: String!
+  os: String
   datetime: String
   plate: String
   numCard: String
@@ -75,6 +75,15 @@ type ManutencaoTable {
   totalCost: Float
 }
 
+type ManutencaoVehicleSummary {
+  plate: String
+  model: String
+  brand: String
+  department: String
+  totalCost: String
+  os: String
+}
+
 type ManutencaoColumn {
   headerLabel: String!
   accessor: String!
@@ -117,10 +126,6 @@ type FilterOptions {
 
 type Query {
   getManutencao(
-    limit: Int
-    offset: Int
-    sortBy: String
-    sortDirection: String
     filters: ManutencaoFiltersInput
   ): [Manutencao!]!
   
@@ -133,7 +138,9 @@ type Query {
     tableFilters: ManutencaoFilterTableInput
   ): [ManutencaoTable!]!
   
-  manutencaoColumns: [ManutencaoColumn!]!
+  ManutencaoColumns: [ManutencaoColumn!]!
+
+  getManutencaoVehicleSummary: [ManutencaoVehicleSummary!]!
 
   TableCount(
     filters: ManutencaoFiltersInput

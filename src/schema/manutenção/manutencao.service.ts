@@ -13,17 +13,54 @@ export class ManutencaoService {
     this.processedData = mapToProcessed(ManutencaoProcessor.processManutencaoData(this.rawData));
   }
 
-  public getManutencao(filters?: ManutencaoFilters) {
-    return this.processedData
+  public getManutencao(filters?: ManutencaoFilters): ManutencaoProcessed[] {
+    let filtered = ManutencaoProcessor.applyFilters(this.processedData, filters);
+
+    if (!filters) return filtered;
+    return filtered;
   }
 
-  public getManutencaoTable(filters?: ManutencaoFilters, tableFilters?: ManutencaoTableFilters) {
-    const data = this.getManutencao()
-    return data;
+  public getManutencaoTable(
+    limit?: any,
+    offset?: any,
+    sortBy?: any,
+    sortDirection?: any,
+    filters?: ManutencaoFilters,
+    tableFilters?: ManutencaoTableFilters
+  ) {
+    // pega dados já filtrados pelo getManutencao (dateRange + filtros gerais)
+    let filtered = ManutencaoProcessor.applyFilters(this.getManutencao(filters), filters, tableFilters);
+
+    // Normaliza sortBy e sortDirection
+    const finalSortBy = sortBy?.toString().trim() || "datetime";
+    const finalSortDirection = (sortDirection || "ascending").toString();
+
+    // Ordena
+    filtered = ManutencaoProcessor.sortData(filtered, finalSortBy, finalSortDirection as any);
+
+    // Converte limit/offset para números válidos
+    const l = Number(limit);
+    const o = Number(offset);
+
+    // Aplica paginação de forma simples
+    const start = !isNaN(o) && o >= 0 ? o : 0;
+    const end = !isNaN(l) && l > 0 ? start + l : undefined;
+
+    filtered = filtered.slice(start, end);
+
+
+    return filtered;
+  }
+  public getManutencaoVehicleSummary() {
+    
+  }
+
+  public getTableCount(filters?: ManutencaoFilters, tableFilters?: ManutencaoTableFilters) {
+    return ManutencaoProcessor.applyFilters(this.processedData, filters, tableFilters).length;
   }
 
   public ManutencaoKpis(filters?: ManutencaoFilters) {
-    const data = this.getManutencao(filters);
+    const data = ManutencaoProcessor.applyFilters(this.processedData, filters);
 
     //Custo total
     const totalCost = data.map(r => Number(r.totalCost) || 0).reduce((acc, val) => acc + val, 0);
@@ -44,7 +81,7 @@ export class ManutencaoService {
 
   public getLastUpdate() {
     // Pega todas as datas válidas
-    const dates = this.processedData
+    const dates = this.getManutencao()
       .map(item => item.datetime)
       .filter(Boolean)
       .map((dateStr: string) => {
@@ -67,7 +104,7 @@ export class ManutencaoService {
   }
 
   public getManutencaoCharts(filters?: ManutencaoFilters) {
-    const data = this.getManutencao(filters);
+    const data = ManutencaoProcessor.applyFilters(this.processedData, filters);
 
     // Agrupa custo por departamento
     const costByDepartmentMap: Record<string, number> = {};
@@ -101,33 +138,29 @@ export class ManutencaoService {
     };
   }
 
-
   public getFilterOptions(filters?: ManutencaoFilters) {
-    // 1. Filtra os dados com base no que já foi selecionado
-    let filtered = this.processedData;
+    const allData = this.getManutencao();
 
-    if (filters?.department) {
-      filtered = filtered.filter(item => item.department === filters.department);
-    }
-
-    if (filters?.categoryOs) {
-      filtered = filtered.filter(item => item.categoryOs === filters.categoryOs);
-    }
-
-    if (filters?.plate) {
-      filtered = filtered.filter(item => item.plate === filters.plate);
-    }
-
-    // 2. Extrai valores únicos para cada campo de filtro
     const mapToFilterType = (arr: (string | undefined | null)[]) =>
       Array.from(new Set(arr.filter(Boolean))).sort()
         .map(value => ({ value: value!, label: value! }));
 
-    // Gera opções de filtro
+    // 1. Filtra dados com base em TODOS os filtros ativos
+    let filtered = allData;
+    if (filters?.department) {
+      filtered = filtered.filter(item => item.department.toLowerCase() === filters.department.toLowerCase());
+    }
+    if (filters?.categoryOs) {
+      filtered = filtered.filter(item => item.categoryOs.toLowerCase() === filters.categoryOs.toLowerCase());
+    }
+    if (filters?.plate) {
+      filtered = filtered.filter(item => item.plate.toLowerCase() === filters.plate.toLowerCase());
+    }
+
+    // 2. Gera as opções dinamicamente a partir do dataset já filtrado
     const departmentOptions = mapToFilterType(filtered.map(item => item.department));
     const categoryOptions = mapToFilterType(filtered.map(item => item.categoryOs));
     const plateOptions = mapToFilterType(filtered.map(item => item.plate));
-    console.log('Opções de filtro geradas:', { departmentOptions, categoryOptions, plateOptions });
 
     return {
       department: departmentOptions,
@@ -135,5 +168,4 @@ export class ManutencaoService {
       plate: plateOptions,
     };
   }
-  
 }

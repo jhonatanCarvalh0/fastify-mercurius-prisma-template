@@ -19,12 +19,12 @@ export function mapToProcessed(rawData: any[]): ManutencaoProcessed[] {
     datetime: item.Data,
     plate: item.Placa,
     numCard: item[ "Núm Cartão" ],
-    prefixo: item.Prefixo,
+    prefixo: item.Prefixo ?? "N/A",
     typeFrota: item[ "Tipo Frota" ],
     brand: item.Marca,
     model: item.Modelo,
     year: item.Ano,
-    patrimony: item.Patrimônio,
+    patrimony: item.Patrimônio ?? "N/A",
     kmHorimetro: item[ "Km/Horímetro" ],
     estabelecimento: item.Estabelecimento,
     city: item.Cidade,
@@ -53,7 +53,7 @@ export function mapToProcessed(rawData: any[]): ManutencaoProcessed[] {
     totalCost: item.Total,
     client: item.Cliente,
     secretaria: item.Secretaria,
-    period: item.Periodo,
+    period: item.Periodo ?? "N/A",
     archive: item.Arquivo
     }
   });

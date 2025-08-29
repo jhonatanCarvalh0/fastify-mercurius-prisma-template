@@ -47,7 +47,7 @@ export interface Manutencao {
 // type.ts - Manutenção 
 export interface ManutencaoProcessed {
   id: string
-  os: string
+  os: number
   datetime: string
   plate: string
   numCard: string
@@ -97,15 +97,13 @@ export interface ManutencaoFilters {
  }
 export interface ManutencaoTableFilters {
   datetime: string
-  os: string
+  os: number
   department: string
   plate: string
   categoryOs: string
-  totalCost: string
+  totalCost: number
  }
 
 export interface ProcessedManutencaoRow {
   [ key: string ]: any;
 }
-
-export interface ManutencaoFilters {}
