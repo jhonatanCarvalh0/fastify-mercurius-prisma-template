@@ -51,9 +51,7 @@ export class ManutencaoService {
 
     return filtered;
   }
-  public getManutencaoVehicleSummary() {
-    
-  }
+
 
   public getTableCount(filters?: ManutencaoFilters, tableFilters?: ManutencaoTableFilters) {
     return ManutencaoProcessor.applyFilters(this.processedData, filters, tableFilters).length;
